@@ -183,8 +183,8 @@ async function bootstrap() {
     } else if (mode === 'force') {
       console.log('🔥 CRITICAL: Ejecutando sequelize.sync({ force: true })');
       await sequelize.sync({ force: true });
-    } else if (mode === 'smart') {
-      console.log('ℹ️ Ejecutando sequelize.sync() (Create only)');
+    } else if (mode === 'smart' || mode === 'qa') {
+      console.log(`ℹ️ Ejecutando sequelize.sync() (Create only) [Mode: ${mode}]`);
       await sequelize.sync();
     } else if (mode === 'none') {
       console.log('🛡️ Skipping sync (Mode: none)');
