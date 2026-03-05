@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ordersApi } from '../services/ordersApi';
+import { ordersApi } from '../api/ordersApi';
 import OrderCard from '../components/OrderCard';
 import { PackageOpen, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';

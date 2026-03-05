@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Sparkles, Loader2, Clipboard, CheckCircle2, AlertCircle } from 'lucide-react';
-import aiService from '../../../services/aiService';
+import aiService from '../../../api/aiService';
 import { useOrder } from '../../../context/OrderContext';
 import toast from 'react-hot-toast';
 

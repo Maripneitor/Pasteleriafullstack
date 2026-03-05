@@ -16,11 +16,11 @@ const NavItem = ({ path, icon: Icon, label, isActive, onClick }) => ( // eslint-
     </Link>
 );
 
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 
 // ... (NavItem remains same)
 
-import { OrderProvider } from '../context/OrderContext';
+import { OrderProvider } from '../../context/OrderContext';
 
 const MainLayout = () => {
     const navigate = useNavigate();

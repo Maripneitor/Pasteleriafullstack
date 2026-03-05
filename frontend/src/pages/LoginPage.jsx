@@ -4,10 +4,10 @@ import { useForm } from 'react-hook-form';
 import { motion } from 'framer-motion';
 import { LogIn, Mail, Lock, ArrowRight } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
-import axios from '../config/axios';
+import axios from '../api/axiosClient';
 import toast from 'react-hot-toast';
-import AnimatedText from '../components/AnimatedText';
-import InputGroup from '../components/InputGroup';
+import AnimatedText from '../components/ui/AnimatedText';
+import InputGroup from '../components/ui/InputGroup';
 import { useAuth } from '../context/AuthContext'; // NEW IMPORT
 
 const LoginPage = () => {

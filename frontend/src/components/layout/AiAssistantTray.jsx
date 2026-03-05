@@ -2,11 +2,11 @@ import { useState, useEffect, useRef } from "react";
 import { Bot, X, Send, Sparkles, Loader2, AlertCircle, Mic, MicOff, History, Trash2, PlusCircle, Edit3, Search, BarChart3 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLocation, useNavigate } from 'react-router-dom';
-import aiService from '../services/aiService';
+import aiService from '../../api/aiService';
 import toast from 'react-hot-toast';
-import useDictation from '../hooks/useDictation';
+import useDictation from '../../hooks/useDictation';
 
-import { useOrder } from '../context/OrderContext';
+import { useOrder } from '../../context/OrderContext';
 
 const AiAssistantTray = ({ isOpen, onClose }) => {
     const location = useLocation();

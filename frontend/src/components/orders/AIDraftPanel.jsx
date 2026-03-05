@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Sparkles, ArrowRight, AlertCircle, Loader2 } from 'lucide-react';
-import client from '../../config/axios';
+import client from '../../api/axiosClient';
 import { useOrder } from '../../context/OrderContext';
 import toast from 'react-hot-toast';
 

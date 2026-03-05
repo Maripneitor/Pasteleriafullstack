@@ -3,7 +3,7 @@ import { useOrder } from '../../../context/OrderContext';
 import { Calculator, CheckCircle, DollarSign, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
-import foliosApi from '../../../services/folios';
+import foliosApi from '../../../api/folios';
 
 const StepF_Payment = ({ prev }) => {
     const { orderData, updateOrder } = useOrder();

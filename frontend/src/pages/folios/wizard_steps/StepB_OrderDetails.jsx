@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useOrder } from '../../../context/OrderContext';
 import { Calendar, Clock, Cake, Layers, Loader2, Sparkles, Lightbulb } from 'lucide-react';
-import catalogApi from '../../../services/catalogApi';
+import catalogApi from '../../../api/catalogApi';
 
 // Inline AI: Portion recommendations
 const PORTION_GUIDE = [

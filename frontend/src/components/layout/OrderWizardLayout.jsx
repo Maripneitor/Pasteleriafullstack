@@ -1,5 +1,5 @@
 import React from 'react';
-import { useOrder } from '../context/OrderContext';
+import { useOrder } from '../../context/OrderContext';
 import { Check, ChevronRight } from 'lucide-react';
 
 const OrderWizardLayout = ({ children, title }) => {

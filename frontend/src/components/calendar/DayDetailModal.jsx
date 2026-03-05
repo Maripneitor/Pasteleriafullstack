@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { FileText, X, Package, Edit, DollarSign, Clock, User, ChevronRight, Cake, MapPin } from 'lucide-react';
-import { ordersApi } from '../../services/ordersApi';
+import { ordersApi } from '../../api/ordersApi';
 import { handlePdfResponse } from '../../utils/pdfHelper';
 import { useNavigate } from 'react-router-dom';
 

@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 // eslint-disable-next-line
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import client from '../config/axios';
-import ordersApi from '../services/ordersApi';
+import client from '../api/axiosClient';
+import ordersApi from '../api/ordersApi';
 import { clearToken } from '../utils/auth';
 import { handlePdfResponse } from '../utils/pdfHelper';
 import toast from 'react-hot-toast';
@@ -11,12 +11,12 @@ import { Search, PlusCircle, Mic, Calendar, User as UserIcon, LogOut, Users, Che
 import { PieChart as RechartsPieChart, Pie, Cell, Tooltip } from 'recharts';
 import { useAuth } from '../context/AuthContext';
 
-import PageHeader from '../components/common/PageHeader';
-import Card from '../components/common/Card';
-import Button from '../components/common/Button';
-import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '../components/common/Table';
-import Badge from '../components/common/Badge';
-import EmptyState from '../components/common/EmptyState';
+import PageHeader from '../components/layout/PageHeader';
+import Card from '../components/ui/Card';
+import { Button } from '../components/ui/Button';
+import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '../components/ui/Table';
+import { Badge } from '../components/ui/Badge';
+import { EmptyState } from '../components/ui/EmptyState';
 
 // Helper for currency
 const formatMoney = (amount) => `$${Number(amount || 0).toLocaleString()}`;

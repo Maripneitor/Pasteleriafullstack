@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Search, User, X } from 'lucide-react';
-import clientsApi from '../../../services/clients';
+import clientsApi from '../../../api/clients';
 import CreateClientModal from '../../clients/CreateClientModal';
 
 export default function ClientAutocomplete({ onSelect, selectedClient }) {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useOrder } from '../../../context/OrderContext';
 import { Upload, Sparkles, Image as ImageIcon, Loader2, Trash2 } from 'lucide-react';
-import api from '../../../config/axios';
+import api from '../../../api/axiosClient';
 import toast from 'react-hot-toast';
 
 const StepD_Design = ({ next, prev }) => {

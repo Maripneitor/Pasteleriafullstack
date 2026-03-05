@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import commissionsApi from '../services/commissionsApi';
+import commissionsApi from '../api/commissionsApi';
 import { toast } from 'react-hot-toast';
 import { Mail, RefreshCw, Download, DollarSign, Clock, CheckCircle } from 'lucide-react';
 
