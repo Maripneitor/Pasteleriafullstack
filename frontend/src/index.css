@@ -2,59 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  :root {
-    --bg-app: 240 20% 98%;      /* gray-50 - Background for the whole app */
-    --surface: 0 0% 100%;       /* white - Background for cards, modals, etc. */
-    --border: 240 10% 90%;      /* gray-200 - Borders */
-
-    --text-main: 240 10% 15%;   /* gray-900 - Primary text */
-    --text-muted: 240 5% 45%;   /* gray-500 - Secondary text */
-
-    --brand-primary: 330 81% 60%;   /* #ec4899 - Pink */
-    --brand-primary-light: 330 81% 80%;
-    --brand-primary-dark: 330 81% 40%;
-
-    --brand-secondary: 258 90% 66%; /* #8b5cf6 - Violet */
-    --brand-secondary-light: 258 90% 86%;
-    --brand-secondary-dark: 258 90% 46%;
-
-    --semantic-success: 142 71% 45%; /* Emerald */
-    --semantic-warning: 38 92% 50%;  /* Amber */
-    --semantic-error: 348 83% 47%;   /* Rose/Red */
-    --semantic-info: 221 83% 53%;    /* Blue */
-
-    --radius: 0.75rem; /* xl */
-  }
-
-  .dark {
-    --bg-app: 240 10% 5%;       /* gray-950 - Background for the whole app */
-    --surface: 240 10% 10%;     /* gray-900 - Background for cards, modals, etc. */
-    --border: 240 10% 20%;      /* gray-800 - Borders */
-
-    --text-main: 240 10% 95%;   /* gray-50 - Primary text */
-    --text-muted: 240 5% 65%;   /* gray-400 - Secondary text */
-
-    --brand-primary: 330 81% 60%;
-    --brand-primary-light: 330 81% 40%;
-    --brand-primary-dark: 330 81% 80%;
-
-    --brand-secondary: 258 90% 66%;
-    --brand-secondary-light: 258 90% 46%;
-    --brand-secondary-dark: 258 90% 86%;
-
-    --semantic-success: 142 71% 45%;
-    --semantic-warning: 38 92% 50%;
-    --semantic-error: 348 83% 47%;
-    --semantic-info: 221 83% 53%;
-  }
+:root {
+  --primary: #ec4899;
+  --primary-dark: #be185d;
+  --secondary: #8b5cf6;
+  --bg-app: #f3f4f6;
+  /* Gris muy suave para el fondo */
+  --sidebar-width: 260px;
+  --header-height: 70px;
 }
 
 body {
-  background-color: hsl(var(--bg-app));
-  color: hsl(var(--text-main));
+  background-color: var(--bg-app);
   font-family: 'Inter', system-ui, sans-serif;
   overflow-x: hidden;
+  /* Previene scroll horizontal indeseado */
 }
 
 /* Scrollbar Personalizado (Estilo Mac/Moderno) */
@@ -68,28 +30,32 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: hsl(var(--border));
+  background: #cbd5e1;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--text-muted));
+  background: var(--primary);
 }
 
-/* Utilidades Responsive Manuales */
+/* Utilidades Responsive Manuales (Por si Tailwind falla) */
 @media (max-width: 768px) {
   .hide-on-mobile {
     display: none !important;
   }
+
   .show-on-mobile {
     display: block !important;
   }
+
   .grid-mobile-1 {
     grid-template-columns: 1fr !important;
   }
+
   .padding-mobile {
     padding: 1rem !important;
   }
+
   .sidebar-collapsed {
     transform: translateX(-100%);
   }
@@ -103,20 +69,20 @@ body {
   border-top: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-.dark .glass-effect {
-  background: rgba(0, 0, 0, 0.8);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
 /* Animación de Carga (Skeleton) */
 .skeleton {
-  background: linear-gradient(90deg, hsl(var(--border)) 25%, hsl(var(--surface)) 50%, hsl(var(--border)) 75%);
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
-  border-radius: var(--radius);
+  border-radius: 8px;
 }
 
 @keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
 }

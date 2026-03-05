@@ -7,7 +7,6 @@ import './index.css'
 // FullCalendar v6 does not require manual CSS imports (files verified missing in node_modules)
 
 import { AuthProvider } from './context/AuthContext'
-import { ThemeProvider } from './context/ThemeContext'
 
 // Filtro para limpiar logs de React DevTools en desarrollo/pruebas
 const originalConsoleError = console.error;
@@ -21,13 +20,11 @@ console.error = (...args) => {
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
-      <ThemeProvider>
-        <AuthProvider>
-          <ErrorBoundary>
-            <App />
-          </ErrorBoundary>
-        </AuthProvider>
-      </ThemeProvider>
+      <AuthProvider>
+        <ErrorBoundary>
+          <App />
+        </ErrorBoundary>
+      </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>,
 )
