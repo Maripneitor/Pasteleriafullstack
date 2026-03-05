@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Menu, LogOut, LayoutDashboard, Calendar, PlusCircle, Users, Package, DollarSign, Settings, Bot, FileText, ClipboardList, BarChart, Tags, PieChart, Building, MessageCircle, ContactRound, BookOpen, Eye, Shield, Activity, Key } from 'lucide-react';
 import { useNavigate, useLocation, Link, Outlet } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { Sun, Moon, Monitor } from 'lucide-react';
 import AiAssistantTray from './AiAssistantTray';
 
 // Extracted NavItem to avoid re-creation on every render
@@ -17,6 +18,7 @@ const NavItem = ({ path, icon: Icon, label, isActive, onClick }) => ( // eslint-
 );
 
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 
 // ... (NavItem remains same)
 
@@ -29,9 +31,11 @@ const MainLayout = () => {
     const [isMobileOpen, setIsMobileOpen] = useState(false);
     const [isAiOpen, setIsAiOpen] = useState(false); // 🤖 Control de IA
     const [isProfileOpen, setIsProfileOpen] = useState(false);
+    const [isThemeOpen, setIsThemeOpen] = useState(false);
 
     // Read user from Context (Real RBAC)
     const { user, logout } = useAuth();
+    const { theme, setExactTheme } = useTheme();
 
     // Allow opening from anywhere
     React.useEffect(() => {
@@ -197,6 +201,35 @@ const MainLayout = () => {
                             >
                                 <Bot size={18} />
                             </button>
+
+                            {/* Theme Toggle */}
+                            <div className="relative">
+                                <button
+                                    onClick={() => setIsThemeOpen(!isThemeOpen)}
+                                    className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors flex items-center justify-center"
+                                    title="Cambiar Tema"
+                                >
+                                    {theme === 'dark' ? <Moon size={20} /> : theme === 'light' ? <Sun size={20} /> : <Monitor size={20} />}
+                                </button>
+
+                                {isThemeOpen && (
+                                    <div className="absolute right-0 top-12 w-40 bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 p-2 animate-in fade-in slide-in-from-top-2 z-[60]">
+                                        <button onClick={() => {setExactTheme('light'); setIsThemeOpen(false)}} className={`flex items-center gap-3 w-full p-2 text-sm rounded-xl transition ${theme === 'light' ? 'bg-pink-50 text-pink-600 font-bold' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'}`}>
+                                            <Sun size={16} /> Claro
+                                        </button>
+                                        <button onClick={() => {setExactTheme('dark'); setIsThemeOpen(false)}} className={`flex items-center gap-3 w-full p-2 text-sm rounded-xl transition ${theme === 'dark' ? 'bg-pink-50 dark:bg-gray-700 text-pink-600 font-bold' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'}`}>
+                                            <Moon size={16} /> Oscuro
+                                        </button>
+                                        <button onClick={() => {setExactTheme('system'); setIsThemeOpen(false)}} className={`flex items-center gap-3 w-full p-2 text-sm rounded-xl transition ${theme === 'system' ? 'bg-pink-50 dark:bg-gray-700 text-pink-600 font-bold' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'}`}>
+                                            <Monitor size={16} /> Sistema
+                                        </button>
+                                    </div>
+                                )}
+
+                                {isThemeOpen && (
+                                    <div className="fixed inset-0 z-[55]" onClick={() => setIsThemeOpen(false)} />
+                                )}
+                            </div>
 
                             <div className="relative">
                                 <button
