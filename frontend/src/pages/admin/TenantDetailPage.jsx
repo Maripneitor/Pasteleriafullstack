@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../services/api';
-import { ArrowLeft, Building, Users, Store as StoreIcon, CheckCircle, Save, Calendar, Activity, X, History } from 'lucide-react';
+import { ArrowLeft, Building, Users, Store as StoreIcon, CheckCircle, Save, Calendar, Activity, X, History, Power, PaintBucket, PowerOff, ShieldAlert, Palette } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const TenantDetailPage = () => {
@@ -12,7 +12,8 @@ const TenantDetailPage = () => {
     
     // Edit state
     const [isEditing, setIsEditing] = useState(false);
-    const [editLimit, setEditLimit] = useState(2);
+    const [editMaxBranches, setEditMaxBranches] = useState(2);
+    const [editMaxUsers, setEditMaxUsers] = useState(5);
     
     // Audit log state
     const [showAuditModal, setShowAuditModal] = useState(false);
@@ -24,7 +25,8 @@ const TenantDetailPage = () => {
         try {
             const res = await api.get(`/super/tenants/${id}`);
             setTenant(res.data);
-            setEditLimit(res.data.maxBranches || 2);
+            setEditMaxBranches(res.data.maxBranches || 2);
+            setEditMaxUsers(res.data.maxUsers || 5);
         } catch (error) {
             console.error("Error fetching tenant detail", error);
             toast.error("Error al cargar detalles del dueño");
@@ -40,7 +42,10 @@ const TenantDetailPage = () => {
 
     const handleSaveLimit = async () => {
         try {
-            await api.put(`/super/tenants/${id}/limits`, { maxBranches: editLimit });
+            await api.put(`/super/tenants/${id}/limits`, { 
+                maxBranches: parseInt(editMaxBranches),
+                maxUsers: parseInt(editMaxUsers)
+            });
             toast.success("Límites actualizados");
             setIsEditing(false);
             fetchTenantData();
@@ -65,91 +70,224 @@ const TenantDetailPage = () => {
         }
     };
 
-    if (loading) return <div className="p-10 text-center text-gray-500">Cargando detalles de dueño...</div>;
+    const handleToggleTenantStatus = async () => {
+        const isCurrentlyActive = tenant.saasContract ? tenant.saasContract.isActive : true;
+        const confirmMsg = isCurrentlyActive 
+            ? "¿Seguro que deseas SUSPENDER a este dueño? Todos sus usuarios perderán acceso al sistema." 
+            : "¿Deseas REACTIVAR la cuenta de este dueño?";
+            
+        if (!window.confirm(confirmMsg)) return;
+
+        try {
+            await api.put(`/super/saas/tenants/${id}/contract`, { isActive: !isCurrentlyActive });
+            toast.success(isCurrentlyActive ? "Dueño suspendido" : "Dueño reactivado");
+            fetchTenantData();
+        } catch (error) {
+            console.error(error);
+            toast.error("Error al cambiar estado de cuenta");
+        }
+    };
+
+    const handleResetBranding = async () => {
+        if (!window.confirm("🚨 ¿Deseas resetear el branding de este negocio por contenido inapropiado? (Se aplicarán valores por defecto)")) return;
+
+        try {
+            await api.put(`/tenant/config`, { 
+                tenantId: id, 
+                logoUrl: null, 
+                primaryColor: null, 
+                footerText: null, 
+                businessName: null 
+            });
+            toast.success("Branding reseteado exitosamente");
+        } catch (error) {
+            console.error(error);
+            toast.error("Error al resetear branding");
+        }
+    };
+
+    const handleToggleUserStatus = async (userId, currentStatus) => {
+        const newStatus = currentStatus === 'BLOCKED' ? 'ACTIVE' : 'BLOCKED';
+        if (!window.confirm(`¿Seguro que deseas cambiar el estado de este usuario a ${newStatus}?`)) return;
+
+        try {
+            await api.put(`/users/${userId}`, { status: newStatus });
+            toast.success("Estado de usuario actualizado");
+            fetchTenantData();
+        } catch (error) {
+            console.error(error);
+            toast.error("Error al actualizar usuario");
+        }
+    };
+
+    if (loading) return <div className="p-10 text-center text-gray-500 font-medium animate-pulse">Cargando detalles de dueño...</div>;
     if (!tenant) return null;
 
     return (
-        <div className="p-6 max-w-6xl mx-auto space-y-6">
+        <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-8">
             <button
                 onClick={() => navigate('/admin/tenants')}
-                className="flex items-center text-gray-500 hover:text-gray-800 transition"
+                className="group flex items-center text-gray-400 hover:text-pink-600 transition-all font-bold text-sm uppercase tracking-widest"
             >
-                <ArrowLeft size={20} className="mr-2" />
-                Volver a Gestión de Dueños
+                <div className="p-2 bg-white rounded-lg shadow-sm border border-gray-100 group-hover:border-pink-200 mr-3 transition-colors">
+                    <ArrowLeft size={18} />
+                </div>
+                Volver a Gestión
             </button>
 
             {/* Header */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center text-pink-600 font-bold text-3xl shadow-sm">
+            <div className="bg-white rounded-[2.5rem] shadow-xl shadow-pink-100/20 border border-gray-100 p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative overflow-hidden">
+                <div className="absolute top-0 right-0 p-10 text-pink-50 opacity-10 pointer-events-none">
+                    <Building size={200} />
+                </div>
+                
+                <div className="flex items-center gap-6 relative z-10">
+                    <div className="w-20 h-20 bg-gradient-to-br from-pink-500 to-rose-600 rounded-[2rem] flex items-center justify-center text-white font-black text-4xl shadow-2xl shadow-pink-200">
                         {tenant.businessName?.charAt(0) || '?'}
                     </div>
                     <div>
-                        <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-3">
-                            {tenant.businessName || 'Dueño sin nombre'}
-                            <span className="text-sm px-3 py-1 rounded-full bg-green-100 text-green-700 font-medium flex items-center gap-1 leading-none">
-                                <CheckCircle size={14} /> Activo
-                            </span>
-                        </h1>
-                        <p className="text-gray-500 mt-1">ID Cliente: {tenant.id} &bull; Creado el {new Date(tenant.createdAt).toLocaleDateString()}</p>
+                        <div className="flex items-center gap-3 flex-wrap">
+                            <h1 className="text-4xl font-black text-gray-900 leading-none">
+                                {tenant.businessName || 'Dueño sin nombre'}
+                            </h1>
+                            {(!tenant.saasContract || tenant.saasContract.isActive) ? (
+                                <span className="px-4 py-1.5 rounded-full bg-emerald-50 text-emerald-600 font-black text-[10px] uppercase tracking-[0.2em] flex items-center gap-1.5 border border-emerald-100">
+                                    <CheckCircle size={12} /> Cliente Activo
+                                </span>
+                            ) : (
+                                <span className="px-4 py-1.5 rounded-full bg-red-50 text-red-600 font-black text-[10px] uppercase tracking-[0.2em] flex items-center gap-1.5 border border-red-100">
+                                    <PowerOff size={12} /> Cliente Suspendido
+                                </span>
+                            )}
+                        </div>
+                        <p className="text-gray-400 mt-2 font-medium flex items-center gap-3">
+                            <span className="bg-gray-100 px-2 py-0.5 rounded text-xs font-mono text-gray-500 uppercase">ID: #{tenant.id}</span>
+                            <span className="flex items-center gap-1"><Calendar size={14} className="text-pink-400" /> Miembro desde: {new Date(tenant.createdAt).toLocaleDateString()}</span>
+                        </p>
                     </div>
                 </div>
+                
+                {!isEditing && (
+                    <div className="flex gap-3 relative z-10 flex-wrap justify-end mt-4 md:mt-0">
+                        <button 
+                            onClick={() => setIsEditing(true)}
+                            className="px-6 py-3 bg-gray-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-gray-800 transition-all shadow-xl shadow-gray-200 active:scale-95"
+                        >
+                            Limitar
+                        </button>
+                        <button 
+                            onClick={() => navigate(`/admin/branding?tenantId=${id}`)}
+                            className="p-3 bg-indigo-50 text-indigo-600 rounded-2xl hover:bg-indigo-100 transition-colors border border-indigo-100 flex items-center gap-2 font-bold text-xs uppercase tracking-widest"
+                            title="Gestionar Branding Manualmente"
+                        >
+                            <Palette size={20} /> Editar Diseño
+                        </button>
+                        <button 
+                            onClick={handleResetBranding}
+                            className="p-3 bg-pink-50 text-pink-600 rounded-2xl hover:bg-pink-100 transition-colors border border-pink-100"
+                            title="Resetear Branding al Default"
+                        >
+                            <PaintBucket size={20} />
+                        </button>
+                        <button 
+                            onClick={handleToggleTenantStatus}
+                            className={`p-3 rounded-2xl transition-colors border active:scale-95 text-white shadow-xl ${(!tenant.saasContract || tenant.saasContract.isActive) ? 'bg-red-500 hover:bg-red-600 border-red-200 shadow-red-200' : 'bg-emerald-500 hover:bg-emerald-600 border-emerald-200 shadow-emerald-200'}`}
+                            title={(!tenant.saasContract || tenant.saasContract.isActive) ? "Suspender Negocio" : "Reactivar Negocio"}
+                        >
+                            <Power size={20} />
+                        </button>
+                    </div>
+                )}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 
                 {/* Limits & General Info Config */}
-                <div className="space-y-6 md:col-span-1">
-                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                        <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-                            <Building size={20} className="text-purple-600" />
-                            Configuración
+                <div className="space-y-8 md:col-span-1">
+                    <div className="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 p-8">
+                        <h2 className="text-xl font-black text-gray-800 mb-6 flex items-center gap-3">
+                            <div className="p-2 bg-purple-50 text-purple-600 rounded-xl">
+                                <Building size={20} />
+                            </div>
+                            Control de Escalamiento
                         </h2>
                         
-                        <div className="space-y-4">
-                            <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
-                                <div className="flex justify-between items-center mb-2">
-                                    <span className="text-sm font-semibold text-gray-600">Límite de Sucursales</span>
-                                    {!isEditing && (
-                                        <button 
-                                            onClick={() => setIsEditing(true)}
-                                            className="text-xs text-blue-600 hover:underline font-medium"
-                                        >
-                                            Editar
-                                        </button>
-                                    )}
+                        <div className="space-y-6">
+                            <div className={`p-6 rounded-3xl border transition-all ${isEditing ? 'bg-pink-50 border-pink-200 shadow-inner' : 'bg-gray-50 border-gray-50'}`}>
+                                <div className="flex justify-between items-center mb-4">
+                                    <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest flex items-center gap-2">
+                                        <StoreIcon size={14} className="text-pink-500" /> Sucursales
+                                    </span>
                                 </div>
                                 {isEditing ? (
-                                    <div className="flex gap-2">
-                                        <input
-                                            type="number"
-                                            value={editLimit}
-                                            onChange={(e) => setEditLimit(e.target.value)}
-                                            className="w-full p-2 border rounded-lg shadow-inner bg-white font-bold"
-                                            min="1"
-                                        />
-                                        <button 
-                                            onClick={handleSaveLimit}
-                                            className="bg-green-600 text-white px-3 py-2 rounded-lg hover:bg-green-700 flex items-center shadow-sm"
-                                        >
-                                            <Save size={18} />
-                                        </button>
-                                    </div>
+                                    <input
+                                        type="number"
+                                        value={editMaxBranches}
+                                        onChange={(e) => setEditMaxBranches(e.target.value)}
+                                        className="w-full p-4 bg-white border border-pink-200 rounded-2xl text-2xl font-black text-pink-600 focus:ring-4 ring-pink-500/20 outline-none transition-all"
+                                        min="1"
+                                    />
                                 ) : (
-                                    <p className="text-2xl font-bold text-gray-900 border-l-4 border-pink-500 pl-3">
-                                        {tenant.maxBranches} <span className="text-sm font-normal text-gray-500">máximo</span>
-                                    </p>
+                                    <div className="flex items-end gap-2">
+                                        <span className="text-4xl font-black text-gray-900 leading-none">{tenant.maxBranches}</span>
+                                        <span className="text-xs font-bold text-gray-400 uppercase mb-1">Permitidas</span>
+                                    </div>
                                 )}
                             </div>
 
-                            <div className="flex justify-between items-center bg-gray-50 p-4 rounded-xl border border-gray-100">
-                                <div className="flex flex-col">
-                                    <span className="text-sm font-semibold text-gray-600 mb-1">Sucursales Creadas</span>
-                                    <span className={`text-xl font-bold ${tenant.branches?.length >= tenant.maxBranches ? 'text-orange-600' : 'text-green-600'}`}>
-                                        {tenant.branches?.length || 0} / {tenant.maxBranches}
+                            <div className={`p-6 rounded-3xl border transition-all ${isEditing ? 'bg-blue-50 border-blue-200 shadow-inner' : 'bg-gray-50 border-gray-50'}`}>
+                                <div className="flex justify-between items-center mb-4">
+                                    <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest flex items-center gap-2">
+                                        <Users size={14} className="text-blue-500" /> Usuarios Admin
                                     </span>
                                 </div>
-                                <StoreIcon size={24} className="text-gray-400" />
+                                {isEditing ? (
+                                    <input
+                                        type="number"
+                                        value={editMaxUsers}
+                                        onChange={(e) => setEditMaxUsers(e.target.value)}
+                                        className="w-full p-4 bg-white border border-blue-200 rounded-2xl text-2xl font-black text-blue-600 focus:ring-4 ring-blue-500/20 outline-none transition-all"
+                                        min="1"
+                                    />
+                                ) : (
+                                    <div className="flex items-end gap-2">
+                                        <span className="text-4xl font-black text-gray-900 leading-none">{tenant.maxUsers || 5}</span>
+                                        <span className="text-xs font-bold text-gray-400 uppercase mb-1">Permitidos</span>
+                                    </div>
+                                )}
+                            </div>
+
+                            {isEditing && (
+                                <div className="grid grid-cols-2 gap-4 pt-2">
+                                    <button 
+                                        onClick={() => setIsEditing(false)}
+                                        className="py-4 bg-gray-100 text-gray-600 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-gray-200 transition-all"
+                                    >
+                                        Cancelar
+                                    </button>
+                                    <button 
+                                        onClick={handleSaveLimit}
+                                        className="py-4 bg-green-500 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-green-600 transition-all shadow-lg shadow-green-100 flex items-center justify-center gap-2"
+                                    >
+                                        <Save size={18} /> Guardar
+                                    </button>
+                                </div>
+                            )}
+
+                            <div className="p-6 bg-gradient-to-br from-orange-400 to-rose-500 rounded-3xl text-white shadow-lg shadow-orange-100">
+                                <p className="text-[10px] font-black uppercase tracking-widest opacity-80 mb-2">Uso Actual</p>
+                                <div className="flex justify-between items-center">
+                                    <div>
+                                        <p className="text-2xl font-black">{tenant.branches?.length || 0}</p>
+                                        <p className="text-[8px] font-bold uppercase tracking-tighter opacity-70">Sucursales</p>
+                                    </div>
+                                    <div className="w-px h-8 bg-white/20" />
+                                    <div>
+                                        <p className="text-2xl font-black">{tenant.users?.length || 0}</p>
+                                        <p className="text-[8px] font-bold uppercase tracking-tighter opacity-70">Usuarios</p>
+                                    </div>
+                                    <Activity size={32} className="opacity-20 translate-x-2" />
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -198,8 +336,9 @@ const TenantDetailPage = () => {
                                         <tr className="border-b border-gray-100 text-gray-500">
                                             <th className="py-2 font-semibold">Nombre</th>
                                             <th className="py-2 font-semibold">Email</th>
+                                            <th className="py-2 font-semibold">Estado</th>
                                             <th className="py-2 font-semibold">Rol</th>
-                                            <th className="py-2 font-semibold text-right">Audit</th>
+                                            <th className="py-2 font-semibold text-right">Control & Audit</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -208,19 +347,35 @@ const TenantDetailPage = () => {
                                                 <td className="py-3 font-medium text-gray-900">{user.name}</td>
                                                 <td className="py-3 text-gray-600">{user.email}</td>
                                                 <td className="py-3">
-                                                    <span className={`px-2 py-1 rounded-full text-xs font-bold leading-none ${
+                                                    <span className={`px-2 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${
+                                                        user.status === 'ACTIVE' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 
+                                                        user.status === 'BLOCKED' ? 'bg-red-50 text-red-600 border-red-100' : 
+                                                        'bg-gray-100 text-gray-500 border-gray-200'
+                                                    }`}>
+                                                        {user.status || 'ACTIVE'}
+                                                    </span>
+                                                </td>
+                                                <td className="py-3">
+                                                    <span className={`px-2 py-1 rounded-full text-[10px] font-black leading-none ${
                                                         user.role === 'OWNER' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'
                                                     }`}>
                                                         {user.role}
                                                     </span>
                                                 </td>
-                                                <td className="py-3 text-right">
+                                                <td className="py-3 text-right flex items-center justify-end gap-2">
+                                                    <button 
+                                                        onClick={() => handleToggleUserStatus(user.id, user.status)}
+                                                        className={`p-1.5 rounded-md transition ${user.status === 'BLOCKED' ? 'bg-emerald-50 text-emerald-500 hover:bg-emerald-100' : 'bg-red-50 text-red-500 hover:bg-red-100'}`}
+                                                        title={user.status === 'BLOCKED' ? 'Desbloquear Usuario' : 'Bloquear Usuario'}
+                                                    >
+                                                        <ShieldAlert size={14} />
+                                                    </button>
                                                     <button 
                                                         onClick={() => fetchUserLogs(user)}
-                                                        className="p-1 hover:bg-gray-200 rounded-md transition text-gray-500"
+                                                        className="p-1.5 bg-gray-50 hover:bg-gray-200 rounded-md transition text-gray-500"
                                                         title="Ver historial de acciones"
                                                     >
-                                                        <History size={16} />
+                                                        <History size={14} />
                                                     </button>
                                                 </td>
                                             </tr>

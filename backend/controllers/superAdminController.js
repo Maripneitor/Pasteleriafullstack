@@ -1,4 +1,4 @@
-const { Folio, CashCut, Tenant, User, AuditLog, DailySalesStats } = require('../models');
+const { Folio, CashCut, Tenant, User, AuditLog, DailySalesStats, SaaSContract, UserSession, ActivationCode } = require('../models');
 const { Op } = require('sequelize');
 
 /**
@@ -109,7 +109,7 @@ exports.getLedger = async (req, res) => {
     try {
         const { SaaSCommissionLedger, Tenant } = require('../models');
         const ledger = await SaaSCommissionLedger.findAll({
-            include: [{ model: Tenant, as: 'tenant', attributes: ['name'] }],
+            include: [{ model: Tenant, as: 'tenant', attributes: ['businessName'] }],
             order: [['createdAt', 'DESC']],
             limit: 100
         });
@@ -142,20 +142,21 @@ exports.getTenantList = async (req, res) => {
     try {
         const tenants = await Tenant.findAll({
             include: [
-                { model: User, as: 'users', limit: 1 }
+                { model: User, as: 'users' }
             ],
             order: [['createdAt', 'DESC']]
         });
 
-        // Fetch counts manually or in a separate pass if needed
         const { Branch } = require('../models');
 
         const formatted = await Promise.all(tenants.map(async t => {
             const branchCount = await Branch.count({ where: { tenantId: t.id } });
+            const owner = t.users.find(u => u.role === 'OWNER');
             return {
                 id: t.id,
                 businessName: t.businessName,
                 maxBranches: t.maxBranches || 2,
+                maxUsers: owner ? owner.maxUsers : 5,
                 branchCount: branchCount,
                 users: t.users,
                 lastActive: t.updatedAt
@@ -206,7 +207,8 @@ exports.getTenantById = async (req, res) => {
         const { id } = req.params;
         const tenant = await Tenant.findByPk(id, {
             include: [
-                { model: User, as: 'users' }
+                { model: User, as: 'users' },
+                { model: SaaSContract, as: 'saasContract' }
             ]
         });
 
@@ -216,13 +218,16 @@ exports.getTenantById = async (req, res) => {
 
         const { Branch } = require('../models');
         const branches = await Branch.findAll({ where: { tenantId: tenant.id } });
+        const owner = tenant.users.find(u => u.role === 'OWNER');
 
         res.json({
             id: tenant.id,
             businessName: tenant.businessName,
             maxBranches: tenant.maxBranches || 2,
+            maxUsers: owner ? owner.maxUsers : 5,
             users: tenant.users,
             branches: branches,
+            saasContract: tenant.saasContract, // Now sending saas contract
             createdAt: tenant.createdAt,
             updatedAt: tenant.updatedAt
         });
@@ -235,7 +240,6 @@ exports.getTenantById = async (req, res) => {
 
 exports.getGlobalSessions = async (req, res) => {
     try {
-        const { UserSession, User } = require('../models');
         const sessions = await UserSession.findAll({
             include: [{ model: User, as: 'user', attributes: ['name', 'email', 'tenantId'] }],
             order: [['lastSeenAt', 'DESC']],
@@ -250,7 +254,7 @@ exports.getGlobalSessions = async (req, res) => {
 
 exports.getGlobalActivationCodes = async (req, res) => {
     try {
-        const { ActivationCode, User, Branch } = require('../models');
+        const { Branch } = require('../models');
         const codes = await ActivationCode.findAll({
             include: [
                 { model: User, as: 'owner', attributes: ['name', 'email'] },

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Menu, LogOut, LayoutDashboard, Calendar, PlusCircle, Users, Package, DollarSign, Settings, Bot, FileText, ClipboardList, BarChart, Tags, PieChart, Building, MessageCircle, ContactRound, BookOpen, Eye } from 'lucide-react';
+import { Menu, LogOut, LayoutDashboard, Calendar, PlusCircle, Users, Package, DollarSign, Settings, Bot, FileText, ClipboardList, BarChart, Tags, PieChart, Building, MessageCircle, ContactRound, BookOpen, Eye, Shield, Activity, Key } from 'lucide-react';
 import { useNavigate, useLocation, Link, Outlet } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import AiAssistantTray from './AiAssistantTray';
@@ -134,12 +134,26 @@ const MainLayout = () => {
                                 {/* 7. Estadísticas */}
                                 <NavItem path="/admin/stats" icon={BarChart} label="Estadísticas" isActive={checkActive('/admin/stats')} onClick={handleNavClick} />
 
-                                {/* 8. Reporte de Comisiones */}
+                                 {/* 8. Reporte de Comisiones */}
                                 <NavItem path="/admin/comisiones" icon={PieChart} label="Reporte de Comisiones" isActive={checkActive('/admin/comisiones')} onClick={handleNavClick} />
+
+                                {/* 9. Insumos e Inventario */}
+                                <NavItem path="/insumos" icon={Package} label="Insumos e Inventario" isActive={checkActive('/insumos')} onClick={handleNavClick} />
 
                                 {/* 🕵️ Modo Chismoso (Live Monitoring) */}
                                 {['SUPER_ADMIN', 'OWNER'].includes(user?.role) && (
                                     <NavItem path="/admin/chismoso" icon={Eye} label="Modo Chismoso" isActive={checkActive('/admin/chismoso')} onClick={handleNavClick} />
+                                )}
+
+                                {/* 👑 PANEL SUPER ADMIN */}
+                                {user?.role === 'SUPER_ADMIN' && (
+                                    <>
+                                        <div className="px-4 text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 mt-6">Infraestructura SaaS</div>
+                                        <NavItem path="/admin/saas" icon={DollarSign} label="Configuración SaaS" isActive={checkActive('/admin/saas')} onClick={handleNavClick} />
+                                        <NavItem path="/admin/auditoria-global" icon={Shield} label="Auditoría Global" isActive={checkActive('/admin/auditoria-global')} onClick={handleNavClick} />
+                                        <NavItem path="/admin/sesiones" icon={Activity} label="Sesiones Activas" isActive={checkActive('/admin/sesiones')} onClick={handleNavClick} />
+                                        <NavItem path="/admin/activacion-codes" icon={Key} label="Gestión de Licencias" isActive={checkActive('/admin/activacion-codes')} onClick={handleNavClick} />
+                                    </>
                                 )}
                             </>
                         )}
@@ -210,17 +224,21 @@ const MainLayout = () => {
                                                 <span className="text-gray-400">Rol Global</span>
                                                 <span className={`font-bold px-2 py-0.5 rounded-full uppercase text-[10px] ${user?.role === 'SUPER_ADMIN' ? 'text-purple-700 bg-purple-100' :
                                                     user?.role === 'ADMIN' ? 'text-blue-700 bg-blue-100' :
-                                                        'text-gray-700 bg-gray-100'
+                                                        user?.role === 'OWNER' ? 'text-pink-700 bg-pink-100' :
+                                                            'text-gray-700 bg-gray-100'
                                                     }`}>
                                                     {user?.role === 'SUPER_ADMIN' ? 'Super Admin' :
                                                         user?.role === 'ADMIN' ? 'Admin' :
-                                                            user?.role || 'User'}
+                                                            user?.role === 'OWNER' ? 'Dueño' :
+                                                                user?.role || 'User'}
                                                 </span>
                                             </div>
                                             {user?.tenantId && (
                                                 <div className="flex justify-between text-xs">
                                                     <span className="text-gray-400">Sucursal</span>
-                                                    <span className="font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">#{user.tenantId}</span>
+                                                    <span className="font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">
+                                                        {user.organization?.businessName || `#${user.tenantId}`}
+                                                    </span>
                                                 </div>
                                             )}
                                         </div>

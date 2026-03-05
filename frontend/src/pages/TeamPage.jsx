@@ -14,7 +14,6 @@ const TeamPage = () => {
     const [users, setUsers] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [formData, setFormData] = useState({
-        username: '',
         name: '',
         email: '',
         password: '',
@@ -95,8 +94,7 @@ const TeamPage = () => {
         }
 
         setFormData({
-            username: user.username || user.name,
-            name: user.name || user.username,
+            name: user.name,
             email: user.email,
             password: '',
             role: user.role || 'EMPLOYEE',
@@ -110,12 +108,12 @@ const TeamPage = () => {
 
     const handleOpenCreate = () => {
         setFormData({
-            username: '',
             name: '',
             email: '',
             password: '',
             role: 'EMPLOYEE',
-            branchId: ''
+            branchId: '',
+            shift: 'Matutino'
         });
         setIsEditing(false);
         setEditId(null);
@@ -127,7 +125,7 @@ const TeamPage = () => {
         try {
             if (isEditing) {
                 // Only send password if provided
-                const dataToSend = { ...formData, name: formData.username }; // Controller maps name to username
+                const dataToSend = { ...formData };
                 if (!dataToSend.password) delete dataToSend.password;
 
                 await usersApi.update(editId, dataToSend);
@@ -217,7 +215,7 @@ const TeamPage = () => {
                                 </td>
                                 <td className="p-5 text-center">
                                     <span className="px-3 py-1 bg-gray-100 text-gray-600 rounded-lg text-xs font-bold border border-gray-200">
-                                        {user.assignedBranch?.name || user.organization?.name || 'Central'}
+                                        {user.assignedBranch?.name || user.organization?.businessName || 'Central'}
                                     </span>
                                 </td>
                                 <td className="p-5 text-center">
@@ -270,10 +268,10 @@ const TeamPage = () => {
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <input
                                 required
-                                placeholder="Nombre Usuario"
+                                placeholder="Nombre Completo"
                                 className="input-modern w-full p-3 border rounded-xl"
-                                value={formData.username}
-                                onChange={e => setFormData({ ...formData, username: e.target.value })}
+                                value={formData.name}
+                                onChange={e => setFormData({ ...formData, name: e.target.value })}
                             />
                             <input
                                 required

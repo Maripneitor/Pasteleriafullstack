@@ -12,7 +12,8 @@
         "seed": "docker compose exec backend npm run seed:full",
         "test": "docker compose exec backend npm run qa:smoke",
         "backend:shell": "docker compose exec backend sh",
-        "frontend:shell": "docker compose exec frontend sh"
+        "frontend:shell": "docker compose exec frontend sh",
+        "check-frontend": "cd frontend && npx react-doctor"
     },
     "description": "Repositorio raíz para el sistema de la Pastelería La Fiesta"
 }

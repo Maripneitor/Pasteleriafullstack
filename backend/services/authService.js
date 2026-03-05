@@ -11,16 +11,17 @@ function getEffectiveRole(user) {
 
     if (globalRole === 'SUPER_ADMIN') return 'SUPER_ADMIN';
     if (globalRole === 'ADMIN') return 'ADMIN';
+    if (globalRole === 'OWNER') return 'OWNER';
 
     // Logic for USER base role
-    if (globalRole === 'USER') {
+    if (globalRole === 'USER' || !globalRole) {
         // If they have an ownerId, they belong to someone -> EMPLOYEE
         if (user.ownerId) return 'EMPLOYEE';
-        // If they don't have an ownerId (and are not pending activation without logic), they are the OWNER
+        // If they don't have an ownerId, they are likely the initial OWNER account
         return 'OWNER';
     }
 
-    return 'USER'; // Fallback
+    return globalRole; // Return original if not matched above (EMPLOYEE, etc)
 }
 
 // Helper: Session Cleanup
@@ -75,8 +76,8 @@ class AuthService {
                 { name: cleanName || (cleanEmail || '') } // Changed username to name
             ),
             include: [
-                { association: 'organization' },
-                { association: 'assignedBranch' }
+                { association: 'organization', attributes: ['businessName'] },
+                { association: 'assignedBranch', attributes: ['name'] }
             ]
         });
 
@@ -184,7 +185,11 @@ class AuthService {
 
     async getMe(userId) {
         const user = await User.findByPk(userId, {
-            attributes: ['id', 'name', 'email', 'role', 'tenantId', 'ownerId', 'status']
+            attributes: ['id', 'name', 'email', 'role', 'tenantId', 'ownerId', 'status'],
+            include: [
+                { association: 'organization', attributes: ['businessName'] },
+                { association: 'assignedBranch', attributes: ['name'] }
+            ]
         });
 
         if (!user) throw { status: 404, message: 'Usuario no encontrado' };
@@ -198,7 +203,9 @@ class AuthService {
             role: effectiveRole,
             tenantId: user.tenantId,
             ownerId: user.ownerId,
-            status: user.status
+            status: user.status,
+            organization: user.organization,
+            branch: user.assignedBranch
         };
     }
 }

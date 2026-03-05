@@ -4,26 +4,21 @@ const UserSession = require('../models/UserSession');
 
 // Helper to determine Effective Role based on DB Role + Context
 function normalizeRole(globalRole, ownerId) {
-  const r = String(globalRole || '').trim();
-  const upper = r.toUpperCase();
+  const r = String(globalRole || '').trim().toUpperCase();
 
   // 1. High Priv roles are direct
-  if (['ADMIN', 'ADMINISTRADOR', 'ADMINISTRATOR'].includes(upper)) return 'ADMIN';
-  if (upper === 'SUPER_ADMIN') return 'SUPER_ADMIN';
+  if (['SUPER_ADMIN', 'ADMIN'].includes(r)) return r;
 
-  // 2. USER Separation using ownerId
-  if (['USER', 'USUARIO'].includes(upper)) {
-    // If has ownerId, they are an EMPLOYEE
+  // 2. OWNER is also direct if explicitly set
+  if (r === 'OWNER') return 'OWNER';
+
+  // 3. USER / Generic handle
+  if (r === 'USER' || !r) {
     if (ownerId) return 'EMPLOYEE';
-    // If no ownerId, they are likely the Business OWNER
     return 'OWNER';
   }
 
-  // 3. Fallbacks (Legacy or Explicit String)
-  if (['OWNER'].includes(upper) || r === 'owner') return 'OWNER';
-  if (['EMPLOYEE'].includes(upper) || r === 'employee') return 'EMPLOYEE';
-
-  return 'USER'; // Default fallback
+  return r; // Default fallback for other roles like EMPLOYEE
 }
 
 const fs = require('fs');

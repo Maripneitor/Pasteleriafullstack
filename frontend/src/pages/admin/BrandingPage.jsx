@@ -3,10 +3,13 @@ import { useForm } from 'react-hook-form';
 import api from '../../config/axios';
 import toast from 'react-hot-toast';
 import { Palette, Save, Eye, Briefcase, ArrowLeft } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 const BrandingPage = () => {
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const targetTenantId = searchParams.get('tenantId');
+
     const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm();
     const [loading, setLoading] = useState(false);
 
@@ -22,11 +25,13 @@ const BrandingPage = () => {
     const loadBranding = async () => {
         try {
             setLoading(true);
-            const { data } = await api.get('/pdf-templates/my-branding');
-            setValue('businessName', data.businessName);
-            setValue('logoUrl', data.logoUrl);
-            setValue('footerText', data.footerText);
-            setValue('primaryColor', data.primaryColor || '#ec4899');
+            const url = targetTenantId ? `/tenant/config?tenantId=${targetTenantId}` : '/tenant/config';
+            const res = await api.get(url);
+            const config = res.data.data || res.data;
+            setValue('businessName', config.businessName);
+            setValue('logoUrl', config.logoUrl);
+            setValue('footerText', config.footerText);
+            setValue('primaryColor', config.primaryColor || '#ec4899');
         } catch (error) {
             console.error(error);
             toast.error("Error cargando branding actual");
@@ -38,7 +43,8 @@ const BrandingPage = () => {
     const onSubmit = async (data) => {
         try {
             setLoading(true);
-            await api.post('/pdf-templates/my-branding', data);
+            const payload = targetTenantId ? { ...data, tenantId: targetTenantId } : data;
+            await api.put('/tenant/config', payload);
             toast.success("Branding actualizado correctamente 🎨");
         } catch (error) {
             console.error(error);
@@ -60,7 +66,7 @@ const BrandingPage = () => {
             <h1 className="text-3xl font-bold mb-2 flex items-center gap-3 text-gray-800">
                 <Palette className="text-pink-600" /> Branding & PDF
             </h1>
-            <p className="text-gray-500 mb-8">Personaliza cómo se ven tus tickets y reportes PDF.</p>
+            <p className="text-gray-500 mb-8">Personaliza cómo se ven los tickets y reportes PDF {targetTenantId && <span className="text-pink-500 font-bold">(Modo SuperAdmin: Editando Tenant #{targetTenantId})</span>}.</p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* Formulario */}

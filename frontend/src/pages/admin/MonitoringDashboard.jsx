@@ -176,7 +176,7 @@ const MonitoringDashboard = () => {
                                             >
                                                 <div className="relative shrink-0">
                                                     <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center text-white font-black text-lg border border-slate-700 shadow-lg group-hover:border-pink-500/50 transition-colors">
-                                                        {log.actor?.username?.[0]?.toUpperCase() || 'AI'}
+                                                        {log.actor?.name?.[0]?.toUpperCase() || 'AI'}
                                                     </div>
                                                     <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-slate-950 rounded-full flex items-center justify-center border border-slate-800">
                                                         <Zap size={10} className="text-yellow-500" />
@@ -185,7 +185,7 @@ const MonitoringDashboard = () => {
                                                 <div className="flex-1 min-w-0">
                                                     <div className="flex justify-between items-center mb-1">
                                                         <div className="flex items-center gap-2">
-                                                            <span className="font-bold text-slate-200 text-base">{log.actor?.username || 'Sistema'}</span>
+                                                            <span className="font-bold text-slate-200 text-base">{log.actor?.name || 'Sistema'}</span>
                                                             <span className="text-slate-500 text-xs">—</span>
                                                             <span className="bg-slate-800 text-slate-400 px-2 py-0.5 rounded text-[10px] font-mono border border-slate-700 uppercase">
                                                                 {log.tenant?.businessName || 'N/A'}

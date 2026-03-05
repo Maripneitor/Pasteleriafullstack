@@ -621,7 +621,6 @@ const DashboardPage = () => {
   const renderContent = () => {
     // Si no es dueño/admin, siempre ve el primario (operativo).
     // Si lo es, ahora por defecto entrará al dashboard de mando (hub).
-    const user = useAuth().user;
     const isOwnerOrSuper = user?.role === 'OWNER' || user?.role === 'SUPER_ADMIN';
 
     if (isOwnerOrSuper && viewMode === 'hub') {

@@ -17,7 +17,7 @@ exports.getAuditLogs = async (req, res) => {
             limit: Number(limit),
             order: [['createdAt', 'DESC']],
             include: [
-                { model: User, as: 'actor', attributes: ['username', 'email'] },
+                { model: User, as: 'actor', attributes: ['name', 'email'] },
                 { model: Tenant, as: 'tenant', attributes: ['businessName'] }
             ]
         });
@@ -40,7 +40,7 @@ exports.getMonitorDashboard = async (req, res) => {
             limit: 20,
             order: [['createdAt', 'DESC']],
             include: [
-                { model: User, as: 'actor', attributes: ['username', 'email'] },
+                { model: User, as: 'actor', attributes: ['name', 'email'] },
                 { model: Tenant, as: 'tenant', attributes: ['businessName'] }
             ]
         });

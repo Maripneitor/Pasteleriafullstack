@@ -11,7 +11,7 @@ exports.getAllUsers = async (req, res) => {
       attributes: { exclude: ['password'] },
       include: [
         { model: User, as: 'owner', attributes: ['id', 'name'] },
-        { association: 'organization', attributes: ['name'] },
+        { association: 'organization', attributes: ['businessName'] },
         { association: 'assignedBranch', attributes: ['name'] }
       ]
     });

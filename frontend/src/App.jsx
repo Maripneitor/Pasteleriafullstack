@@ -25,6 +25,7 @@ import CashRegister from './pages/CashRegister';
 import ProductionPage from './pages/ProductionPage'; // Nuevo Kanban
 import OrderDetailsProduction from './pages/OrderDetailsProduction';
 import AuditPage from './pages/AuditPage';
+import InsumosPage from './pages/InsumosPage';
 import NotFound from './pages/NotFound';
 
 // 🆕 Módulos Operativos (UI Forms)
@@ -42,6 +43,10 @@ import BrandingPage from './pages/admin/BrandingPage';
 import TenantsPage from './pages/admin/TenantsPage';
 import TenantDetailPage from './pages/admin/TenantDetailPage';
 import MonitoringDashboard from './pages/admin/MonitoringDashboard';
+import GlobalAuditPage from './pages/admin/GlobalAuditPage';
+import GlobalSessionsPage from './pages/admin/GlobalSessionsPage';
+import ActivationCodesPage from './pages/admin/ActivationCodesPage';
+import SaaSConfigPage from './pages/admin/SaaSConfigPage';
 
 import MainLayout from './components/MainLayout';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -100,7 +105,6 @@ function App() {
             <Route path="admin/comisiones" element={<CommissionsPage />} />
             <Route path="insumos" element={<InsumosPage />} />
             <Route path="auditoria" element={<AuditPage />} />
-            <Route path="auditoria" element={<AuditPage />} />
             <Route path="admin/chismoso" element={<MonitoringDashboard />} />
             <Route path="configuracion" element={<LocalSettings />} />
             <Route path="usuarios/pendientes" element={<PendingUsersPage />} />
@@ -114,6 +118,10 @@ function App() {
             <Route element={<ProtectedRoute allowedRoles={['SUPER_ADMIN']} />}>
               <Route path="admin/tenants" element={<TenantsPage />} />
               <Route path="admin/tenants/:id" element={<TenantDetailPage />} />
+              <Route path="admin/auditoria-global" element={<GlobalAuditPage />} />
+              <Route path="admin/sesiones" element={<GlobalSessionsPage />} />
+              <Route path="admin/activacion-codes" element={<ActivationCodesPage />} />
+              <Route path="admin/saas" element={<SaaSConfigPage />} />
             </Route>
 
             <Route path="admin/whatsapp" element={<WhatsAppPage />} />
