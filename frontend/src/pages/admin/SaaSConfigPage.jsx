@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import api from '../../services/api';
+import api from '../../api/axiosClient';
 import { CreditCard, TrendingUp, Users, ShoppingBag, DollarSign, PieChart, ShieldAlert, FileText, CheckCircle, RefreshCw } from 'lucide-react';
 import toast from 'react-hot-toast';
 

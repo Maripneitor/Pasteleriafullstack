@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useOrder } from '../../../context/OrderContext';
 import { PlusCircle, Trash2 } from 'lucide-react';
-import catalogApi from '../../../services/catalogApi';
+import catalogApi from '../../../api/catalogApi';
 
 const StepC_Complements = ({ next, prev }) => {
     const { orderData, updateOrder } = useOrder();

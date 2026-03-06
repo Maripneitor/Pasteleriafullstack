@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Plus, User, Phone, Mail } from 'lucide-react';
-import clientsApi from '../../services/clients';
+import clientsApi from '../../api/clients';
 import CreateClientModal from './CreateClientModal';
 import toast from 'react-hot-toast';
 

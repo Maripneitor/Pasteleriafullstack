@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FileText, Edit, Trash2, XCircle, DollarSign, Package } from 'lucide-react';
-import client from '../config/axios';
-import { ordersApi } from '../services/ordersApi';
+import client from '../api/axiosClient';
+import { ordersApi } from '../api/ordersApi';
 import { handlePdfResponse } from '../utils/pdfHelper'; // Import helper
 import toast from 'react-hot-toast';
 

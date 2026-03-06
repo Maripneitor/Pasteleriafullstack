@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import client from '../config/axios';
+import client from '../api/axiosClient';
 import PageShell from '../components/ui/PageShell';
 import Card from '../components/ui/Card';
 import { DollarSign, ArrowUpCircle, ArrowDownCircle, Lock, Eye, EyeOff, PlusCircle, MinusCircle, User } from 'lucide-react';
 import toast from 'react-hot-toast';
-import Badge from '../components/common/Badge';
+import { Badge } from '../components/ui/Badge';
 
 export default function CashRegister() {
     const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
@@ -219,7 +219,7 @@ export default function CashRegister() {
                                     />
                                 </div>
                             </div>
-                            
+
                             {arqueoInput !== "" && (
                                 <div className={`p-4 rounded-xl ${
                                     (Number(arqueoInput) - Number(cut.incomeCash)) >= 0 ? 'bg-emerald-50 border border-emerald-100' : 'bg-red-50 border border-red-100'

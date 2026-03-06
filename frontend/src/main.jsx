@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App.jsx'
-import ErrorBoundary from './components/ErrorBoundary.jsx'
+import ErrorBoundary from './components/layout/ErrorBoundary.jsx'
 import './index.css'
 // FullCalendar v6 does not require manual CSS imports (files verified missing in node_modules)
 

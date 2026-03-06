@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import client from '../config/axios';
-import PageHeader from '../components/common/PageHeader';
-import Card from '../components/common/Card';
-import Button from '../components/common/Button';
-import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '../components/common/Table';
-import Badge from '../components/common/Badge';
-import EmptyState from '../components/common/EmptyState';
+import client from '../api/axiosClient';
+import PageHeader from '../components/layout/PageHeader';
+import Card from '../components/ui/Card';
+import { Button } from '../components/ui/Button';
+import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '../components/ui/Table';
+import { Badge } from '../components/ui/Badge';
+import { EmptyState } from '../components/ui/EmptyState';
 import { ShieldAlert, RefreshCw } from 'lucide-react';
 
 export default function AuditPage() {

@@ -1,5 +1,5 @@
 import React from 'react';
-import OrderWizardLayout from '../../components/OrderWizardLayout';
+import OrderWizardLayout from '../../components/layout/OrderWizardLayout';
 import { useOrder } from '../../context/OrderContext';
 
 // New Modular Steps

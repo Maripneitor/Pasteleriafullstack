@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 // eslint-disable-next-line
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import client from '../config/axios';
-import ordersApi from '../services/ordersApi';
+import client from '../api/axiosClient';
+import ordersApi from '../api/ordersApi';
 import { clearToken } from '../utils/auth';
 import { handlePdfResponse } from '../utils/pdfHelper';
 import toast from 'react-hot-toast';
@@ -11,12 +11,12 @@ import { Search, PlusCircle, Mic, Calendar, User as UserIcon, LogOut, Users, Che
 import { PieChart as RechartsPieChart, Pie, Cell, Tooltip } from 'recharts';
 import { useAuth } from '../context/AuthContext';
 
-import PageHeader from '../components/common/PageHeader';
-import Card from '../components/common/Card';
-import Button from '../components/common/Button';
-import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '../components/common/Table';
-import Badge from '../components/common/Badge';
-import EmptyState from '../components/common/EmptyState';
+import PageHeader from '../components/layout/PageHeader';
+import Card from '../components/ui/Card';
+import { Button } from '../components/ui/Button';
+import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '../components/ui/Table';
+import { Badge } from '../components/ui/Badge';
+import { EmptyState } from '../components/ui/EmptyState';
 
 // Helper for currency
 const formatMoney = (amount) => `$${Number(amount || 0).toLocaleString()}`;
@@ -278,8 +278,8 @@ const OwnerDashboard = ({ stats, navigate, handleLogout }) => {
               {recentAudit.map((log, i) => (
                 <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 border border-gray-100">
                   <div className={`w-2 h-2 rounded-full flex-shrink-0 ${
-                    log.action?.includes('DELETE') || log.action?.includes('CANCEL') ? 'bg-red-500' 
-                    : log.action?.includes('CREATE') ? 'bg-emerald-500' 
+                    log.action?.includes('DELETE') || log.action?.includes('CANCEL') ? 'bg-red-500'
+                    : log.action?.includes('CREATE') ? 'bg-emerald-500'
                     : 'bg-blue-500'
                   }`}></div>
                   <div className="flex-1 min-w-0">
@@ -437,8 +437,8 @@ const EmployeeDashboard = ({ stats, navigate, handleLogout, handleBuscar, handle
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
           {/* Cola de Trabajo Principal */}
-          <Card 
-            title="Cola de Trabajo Actual" 
+          <Card
+            title="Cola de Trabajo Actual"
             subtitle="Pedidos que requieren atención"
             action={
               <div className="flex gap-2 bg-gray-100 p-1 rounded-lg">

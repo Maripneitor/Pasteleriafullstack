@@ -48,8 +48,8 @@ import GlobalSessionsPage from './pages/admin/GlobalSessionsPage';
 import ActivationCodesPage from './pages/admin/ActivationCodesPage';
 import SaaSConfigPage from './pages/admin/SaaSConfigPage';
 
-import MainLayout from './components/MainLayout';
-import ProtectedRoute from './components/ProtectedRoute';
+import MainLayout from './components/layout/MainLayout';
+import ProtectedRoute from './components/layout/ProtectedRoute';
 import { OrderProvider } from './context/OrderContext';
 
 // DebugPanel removed (diagnostic mode off)

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import client from '../config/axios';
-import PageHeader from '../components/common/PageHeader';
-import Card from '../components/common/Card';
-import Button from '../components/common/Button';
-import Badge from '../components/common/Badge';
+import client from '../api/axiosClient';
+import PageHeader from '../components/layout/PageHeader';
+import Card from '../components/ui/Card';
+import { Button } from '../components/ui/Button';
+import { Badge } from '../components/ui/Badge';
 import { Loader2, CheckCircle, Clock, Flame, Palette, RefreshCw, Printer, Tag, AlertTriangle } from 'lucide-react';
 import toast from 'react-hot-toast';
 

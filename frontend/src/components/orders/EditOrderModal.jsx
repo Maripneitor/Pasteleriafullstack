@@ -5,9 +5,9 @@ import {
     Layers, Square, Circle, Heart, RectangleVertical
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import client from '../../config/axios';
-import catalogApi from '../../services/catalogApi';
-import aiService from '../../services/aiService';
+import client from '../../api/axiosClient';
+import catalogApi from '../../api/catalogApi';
+import aiService from '../../api/aiService';
 import toast from 'react-hot-toast';
 
 const EditOrderModal = ({ order, isOpen, onClose, onUpdate }) => {
