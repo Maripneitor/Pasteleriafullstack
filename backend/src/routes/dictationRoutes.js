@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const dictationController = require('../controllers/dictationController');
-const authMiddleware = require('../middlewaress/authMiddleware');
+const authMiddleware = require('../middlewares/authMiddleware');
 
 // Configuración de Multer para guardar en memoria (más simple para este caso)
 const storage = multer.memoryStorage();

@@ -1,4 +1,4 @@
-import client from '../api/axiosClient';
+import client from './axiosClient';
 import { getToken } from '../utils/auth';
 
 export const ordersApi = {

@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const tenantConfigController = require('../controllers/tenantConfigController');
-const authMiddleware = require('../middlewaress/authMiddleware');
-const checkRole = require('../middlewaress/checkRole');
+const authMiddleware = require('../middlewares/authMiddleware');
+const checkRole = require('../middlewares/checkRole');
 
 router.use(authMiddleware);
 

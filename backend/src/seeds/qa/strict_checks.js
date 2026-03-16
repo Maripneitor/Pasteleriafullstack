@@ -12,7 +12,7 @@ const mockRes = () => {
 
 // Import Logic to Test
 const activationController = require('../../controllers/activationController');
-const requireBranch = require('../../middlewaresss/requireBranch');
+const requireBranch = require('../../middlewares/requireBranch');
 
 async function runStrictQA() {
     console.log('🛡️  Starting STRICT QA Checks...');

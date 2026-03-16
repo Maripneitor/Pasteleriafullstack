@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const folioController = require('../controllers/folioController');
-const authMiddleware = require('../middlewaress/authMiddleware');
-const tenantScope = require('../middlewaress/tenantScope');
+const authMiddleware = require('../middlewares/authMiddleware');
+const tenantScope = require('../middlewares/tenantScope');
 
-const uploadReference = require('../middlewaress/uploadReference');
+const uploadReference = require('../middlewares/uploadReference');
 
 router.use(authMiddleware);
 router.use(tenantScope);

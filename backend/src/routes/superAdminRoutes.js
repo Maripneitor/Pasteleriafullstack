@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const superAdminController = require('../controllers/superAdminController');
-const authMiddleware = require('../middlewaress/authMiddleware');
+const authMiddleware = require('../middlewares/authMiddleware');
 const roleCheck = (role) => (req, res, next) => {
     if (req.user && req.user.role === role) return next();
     return res.status(403).json({ message: 'Forbidden' });
 };
 
-const checkRole = require('../middlewaress/checkRole');
+const checkRole = require('../middlewares/checkRole');
 
 router.use(authMiddleware);
 

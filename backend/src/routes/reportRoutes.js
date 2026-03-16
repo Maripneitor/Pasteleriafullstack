@@ -2,9 +2,9 @@ const express = require('express');
 const router = express.Router();
 const reportController = require('../controllers/reportController');
 const demoPdfController = require('../controllers/demoPdfController');
-const authMiddleware = require('../middlewaress/authMiddleware');
+const authMiddleware = require('../middlewares/authMiddleware');
 
-const checkRole = require('../middlewaress/checkRole');
+const checkRole = require('../middlewares/checkRole');
 
 router.use(authMiddleware);
 

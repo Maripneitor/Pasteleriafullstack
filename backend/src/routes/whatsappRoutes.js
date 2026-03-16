@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const whatsappController = require('../controllers/whatsappController');
-const auth = require('../middlewaress/authMiddleware');
-const role = require('../middlewaress/roleMiddleware');
+const auth = require('../middlewares/authMiddleware');
+const role = require('../middlewares/roleMiddleware');
 
 // Admin Endpoints only
 // Base URL: /api/whatsapp

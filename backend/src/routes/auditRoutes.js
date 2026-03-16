@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const auditController = require('../controllers/auditController');
-const authMiddleware = require('../middlewaress/authMiddleware');
-const roleMiddleware = require('../middlewaress/roleMiddleware');
+const authMiddleware = require('../middlewares/authMiddleware');
+const roleMiddleware = require('../middlewares/roleMiddleware');
 
 // Solo admin/superadmin
 router.get('/', authMiddleware, roleMiddleware(['ADMIN', 'Administrador', 'SUPER_ADMIN', 'OWNER']), auditController.getAuditLogs);

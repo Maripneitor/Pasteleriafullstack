@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const aiSessionController = require('../controllers/aiSessionController');
-const authMiddleware = require('../middlewaress/authMiddleware');
+const authMiddleware = require('../middlewares/authMiddleware');
 
 // Guard: Validate Controller Exports
 const requiredHandlers = [

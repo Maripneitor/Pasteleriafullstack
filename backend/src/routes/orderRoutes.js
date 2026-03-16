@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const orderController = require('../controllers/orderController');
-const authMiddleware = require('../middlewaress/authMiddleware');
-const tenantScope = require('../middlewaress/tenantScope');
+const authMiddleware = require('../middlewares/authMiddleware');
+const tenantScope = require('../middlewares/tenantScope');
 
 // Protection
 router.use(authMiddleware);

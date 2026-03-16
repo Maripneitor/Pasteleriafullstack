@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const emailController = require('../controllers/emailController');
-const authMiddleware = require('../middlewaress/authMiddleware');
+const authMiddleware = require('../middlewares/authMiddleware');
 
 // Configure multer for memory storage
 const upload = multer({

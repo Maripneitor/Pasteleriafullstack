@@ -1,4 +1,4 @@
-import axios from '../api/axiosClient';
+import axios from './axiosClient';
 
 export const activationApi = {
     // Owner generates code

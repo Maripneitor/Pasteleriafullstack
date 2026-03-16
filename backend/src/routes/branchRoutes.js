@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const branchController = require('../controllers/branchController');
-const authMiddleware = require('../middlewaress/authMiddleware');
-const tenantScope = require('../middlewaress/tenantScope');
-const checkRole = require('../middlewaress/checkRole');
+const authMiddleware = require('../middlewares/authMiddleware');
+const tenantScope = require('../middlewares/tenantScope');
+const checkRole = require('../middlewares/checkRole');
 
 // All routes require Auth + Tenant
 router.use(authMiddleware);

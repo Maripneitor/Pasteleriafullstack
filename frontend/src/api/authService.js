@@ -1,4 +1,4 @@
-import client from '../api/axiosClient';
+import client from './axiosClient';
 import { setToken, clearToken } from '../utils/auth';
 
 // URL base del backend. En desarrollo con Vimte, normalmente se usa un proxy o la URL directa.

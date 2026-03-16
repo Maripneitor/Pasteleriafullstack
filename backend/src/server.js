@@ -114,7 +114,7 @@ app.post('/api/ai/session/message',
 // ========================================
 // 5. SWAGGER DOCUMENTATION
 // ========================================
-const { swaggerSpec, swaggerUi } = require('./docs/swagger');
+const { swaggerSpec, swaggerUi } = require('../docs/swagger');
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { explorer: true }));
 app.get('/api/docs.json', (req, res) => res.json(swaggerSpec));
 console.log('📄 Swagger Docs available at /api/docs');

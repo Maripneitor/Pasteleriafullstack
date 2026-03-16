@@ -1,4 +1,4 @@
-import client from '../api/axiosClient';
+import client from './axiosClient';
 
 /**
  * Service to handle AI interactions

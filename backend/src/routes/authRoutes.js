@@ -47,7 +47,7 @@ router.post('/register', authController.register);
 router.post('/login', authController.login);
 
 // Ruta para obtener usuario actual
-const authMiddleware = require('../middlewaress/authMiddleware');
+const authMiddleware = require('../middlewares/authMiddleware');
 router.get('/me', authMiddleware, authController.getMe);
 router.post('/logout', authMiddleware, authController.logout);
 

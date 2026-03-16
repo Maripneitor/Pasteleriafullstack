@@ -1,142 +1,73 @@
-# 🎂 Pastelería La Fiesta - Sistema de Gestión
+# Pastelería La Fiesta - Análisis y Plan de Producto (SaaS B2B)
 
-Sistema integral para la gestión de pedidos, clientes y reportes de la pastelería. Construido con un enfoque de alto rendimiento, multi-tenencia y una interfaz de usuario moderna y fluida.
-
----
-
-## 🛠️ Stack Tecnológico
-
-### Frontend
-
-- **Framework:** React 19 + Vite
-- **Estilos:** Tailwind CSS 3.4
-- **Animaciones:** Framer Motion 12
-- **UI Components:** Lucide React, Recharts, FullCalendar
-- **Gestión:** React Hook Form, Context API
-
-### Backend
-
-- **Core:** Node.js (v24+) + Express
-- **Base de Datos:** MySQL + Sequelize (ORM)
-- **Generación de Documentos:** Puppeteer (para PDFs de alta fidelidad), PDFKit (ligero)
-- **Integraciones:** WhatsApp Web.js (Notificaciones), OpenAI (Asistente IA Voice-to-Order)
+Este documento es una guía estratégica viva del proyecto. Sirve para evaluar la salud actual de la plataforma, plantear las preguntas correctas para su evolución, y definir las metas técnicas y de negocio a corto y mediano plazo.
 
 ---
 
-## 🚀 Cómo Correr el Proyecto
+## 1. El Diagnóstico (¿Qué necesitamos saber del proyecto actual?)
 
-### Opción A: Con Docker (Recomendado)
+**El propósito principal:**
+La plataforma es un SaaS B2B Multi-Tenant diseñado para la gestión operativa y estratégica de pastelerías ("La Fiesta"). Su valor reside en consolidar la captura de pedidos (manual e IA), control de caja, inventario, reportes financieros y gestión de sucursales en un solo lugar. **El propósito sigue intacto y es más relevante que nunca** ante la necesidad de los dueños de escalar de 1 a 100 sucursales sin perder el control.
 
-Esta opción levanta automáticamente el Frontend, Backend y la Base de Datos.
+**Estado de la arquitectura y el código:**
+- **Backend:** Se ha migrado exitosamente hacia una **Clean Architecture** (`/src/controllers`, `/services`, `/models`, etc.). La lógica de negocio pesada (parseo de IA, flujos de pedidos) está en servicios, lo cual hace al backend altamente escalable y mantenible.
+- **Frontend:** Refactorizado hacia un enfoque modular y basado en el ecosistema React (`/components/ui`, `/components/layout`, `/api`, `/hooks`). Existe un **Design System** robusto con soporte nativo para Modo Oscuro, eliminando el código "espagueti" visual.
+- **Seguridad:** Se maneja a través de un RBAC estricto (Roles) y aislamiento Multi-Tenant robusto garantizado por middlewares.
 
-1.  **Iniciar Entorno:**
-    ```bash
-    docker compose up -d --build
-    ```
-2.  **Inicializar Datos (Seeding):**
-    Para cargar el catálogo de prueba, sucursales y roles:
-    ```bash
-    docker compose exec backend npm run seed:full
-    ```
-3.  **Credenciales por Defecto:**
-    - **SuperAdmin:** `admin@gmail.com` / `Admin1234`
-    - **Owner:** `owner@demo.com` / `admin123`
-    - **Mario Dev:** `mario@dev.com` / `mario123`
-4.  **Limpiar Entorno:**
-    ```bash
-    docker compose down -v
-    ```
+**Rendimiento y cuellos de botella:**
+- **Dependencias Externas:** El mayor cuello de botella potencial radica en la latencia de las peticiones a la API de OpenAI (parseo de pedidos por voz/texto) y la generación síncrona de PDFs de alta carga gráfica.
+- **Base de Datos:** MySQL gestiona bien la carga actual, pero con el crecimiento de "Modo Chismoso" (Logs de Auditoría en vivo) y múltiples Tenants, las consultas históricas podrían ralentizarse si no se indexan correctamente o se archivan.
 
-### Opción B: Con NPM (Desarrollo Local)
-
-Necesitarás tener una instancia de MySQL corriendo localmente.
-
-#### 1. Backend
-
-1.  Entra a la carpeta: `cd backend`
-2.  Instala dependencias: `npm install`
-3.  Configura tu archivo `.env` (usa `.env.example` como base).
-4.  Inicia el servidor: `npm run dev`
-
-#### 2. Frontend
-
-1.  Entra a la carpeta: `cd frontend`
-2.  Instala dependencias: `npm install`
-3.  Inicia la aplicación: `npm run dev`
+**Errores actuales (Bugs y Deuda Técnica):**
+- **Estabilidad de WhatsApp:** La sesión de `whatsapp-web.js` puede ser inestable si la conexión del dispositivo principal falla. Requiere monitoreo y auto-reconexión robusta.
+- **Manejo de Errores Frontend:** Algunos endpoints aún podrían no manejar correctamente los "Empty States" en la UI cuando falla la red.
 
 ---
 
-## 🧪 Comandos Útiles
+## 2. Las Preguntas Clave (¿Qué información debemos pedir?)
 
-### 🐳 Gestión de Contenedores (Docker)
+### 🧑‍💼 Preguntas para los Usuarios (Dueños, Administradores, Cajeros):
 
-Estos son los comandos más utilizados para administrar el entorno sin perder información:
+1. **Misión Crítica:** *"¿Cuál es la función principal por la que usas esta aplicación?"*
+   - _Propósito:_ Asegurar que la captura de pedidos (Folios) y el Cuadre de Caja jamás se rompan durante actualizaciones.
+2. **Puntos de Fricción (UX):** *"¿Qué te frustra o te confunde al usarla?"*
+   - _Propósito:_ Detectar si la interfaz de captura rápida es demasiado lenta en hora pico, o si los reportes financieros no son claros a simple vista.
+3. **El "Botón Mágico" (Features):** *"Si pudieras agregarle un 'botón mágico' que hiciera algo nuevo, ¿qué haría?"*
+   - _Posibles respuestas esperadas:_ "Sugerir promociones automáticas", "Avisarme en WhatsApp si hay un robo", "Predecir qué pasteles hornear mañana".
 
-- **Apagar todo temporalmente** (sin borrar nada):
-  ```bash
-  docker compose stop
-  ```
-- **Encender todo** (si estaba apagado con stop):
-  ```bash
-  docker compose start
-  ```
-- **Apagar y remover contenedores** (mantiene los datos de la base de datos a salvo):
-  ```bash
-  docker compose down
-  ```
-- **Reiniciar todo** (apaga y enciende rápidamente):
-  ```bash
-  docker compose restart
-  ```
-- **Reiniciar un servicio específico** (ideal cuando haces cambios grandes en backend o frontend):
-  ```bash
-  docker compose restart backend
-  # o
-  docker compose restart frontend
-  ```
-- **Reconstruir un servicio** (usar si instalaste un nuevo paquete en el `package.json`):
-  ```bash
-  docker compose up -d --build backend
-  ```
-- **Ver logs en tiempo real:**
-  ```bash
-  docker compose logs -f
-  # o para un servicio específico:
-  docker compose logs -f backend
-  ```
-- **⚠️ DESTRUCTIVO: Apagar todo y borrar la base de datos completa:**
-  ```bash
-  docker compose down -v
-  ```
+### 🛠️ Preguntas para el Equipo de Desarrollo (Revisión Técnica):
 
-### 🗄️ Gestión de Datos (Scripts)
-
-- `npm run seed:full`: Carga todos los datos iniciales (Roles, HQ, Catálogo).
-- `npm run fix:db`: Intenta reparar inconsistencias en la BD.
-
-### QA y Pruebas
-
-- `npm run qa:smoke`: Ejecuta pruebas rápidas de conexión y salud.
-- `npm run qa:contract`: Verifica que los endpoints respondan con el formato correcto.
-- `npm run qa:full`: Simulación de flujo completo de pedidos por roles.
+1. **Mantenimiento:** *"¿Qué parte del código da más problemas de mantenimiento o es más difícil de leer?"*
+   - _Foco actual:_ Simplificar y refactorizar el `OrderWizardLayout` (el flujo de captura de pedido de 6 pasos) si se vuelve inmanejable.
+2. **Documentación:** *"¿Están bien documentadas las herramientas que usamos?"*
+   - _Foco actual:_ Existe Swagger para la API en `/api/docs` y un `DESIGN_SYSTEM.md` para el UI. Hay que mantenerlos al día al agregar endpoints del Dashboard Global.
+3. **Obsolescencia:** *"¿Qué tecnologías o dependencias están obsoletas y necesitan actualización?"*
+   - _Foco actual:_ Monitorear la compatibilidad de `puppeteer` y `whatsapp-web.js` con las últimas versiones de Node y los cambios en la API de Meta.
 
 ---
 
-## 🎨 Sistema Visual y Vistas
+## 3. El Plan de Acción (Metas Claras y Medibles)
 
-La aplicación utiliza una estética **"Vibrant & Clean"**:
+Para asegurar que la plataforma aporte valor real y soporte el crecimiento, las metas se dividen en tres pilares:
 
-- **Colores:** Rosa intenso (`#ec4899`) para la marca y Violeta (`#8b5cf6`) para funciones de IA.
-- **Micro-interacciones:** Uso de `Framer Motion` para transiciones suaves y efectos de escala en botones.
-- **Vistas Principales:**
-  - **Dashboard:** KPIs en tiempo real y gráficos de ventas.
-  - **Wizard de Pedidos:** Proceso guiado de 6 pasos para captura de folios.
-  - **Producción:** Tablero estilo Kanban para seguimiento de estados (Pendiente, Decoración, Terminado).
+### 🧹 Metas de Refactorización y Calidad
+1. **Consistencia Visual Total (Sprint 1.1):**
+   - _Objetivo:_ Erradicar el 100% de los colores "hardcodeados" (ej. `bg-white`) en los componentes restantes y garantizar que el Dark Mode se vea perfecto en todas las pantallas.
+2. **Cobertura de Pruebas E2E:**
+   - _Objetivo:_ Automatizar las pruebas de los flujos críticos (Login → Crear Pedido → Cerrar Caja) usando Playwright en CI/CD para evitar regresiones.
 
----
+### ⚡ Metas de Optimización y Rendimiento
+1. **Procesamiento Asíncrono de Tareas Pesadas:**
+   - _Objetivo:_ Mover la generación de PDFs y el envío masivo de correos/WhatsApp a una cola de trabajos en segundo plano (ej. Redis/BullMQ) para reducir el tiempo de respuesta de la API a menos de 500ms.
+2. **Optimización de Base de Datos para el Dashboard:**
+   - _Objetivo:_ Crear vistas materializadas o tablas de resumen pre-calculadas (CRON jobs nocturnos) para que el "Dashboard Global del Dueño" cargue en menos de 1 segundo incluso con años de historia.
 
-## 🔧 Troubleshooting Típico
+### ✨ Metas de Nuevas Funcionalidades (Features Basadas en Valor)
+1. **Dashboard Estratégico Multi-Sucursal (Visión de Águila):**
+   - _Objetivo:_ Implementar un selector de sucursales en tiempo real y KPIs comparativos (Ventas Sucursal A vs B) exclusivo para el rol `OWNER`.
+2. **Caja Fuerte (Control y Auditoría Estricta):**
+   - _Objetivo:_ Flujo obligatorio de "Apertura y Cierre" ciego, forzando a los cajeros a ingresar el conteo físico antes de revelar el sobrante/faltante calculado por el sistema.
+3. **CRM e Insights de IA:**
+   - _Objetivo:_ Usar OpenAI no solo para capturar texto, sino para predecir demanda estacional y segmentar clientes VIP automáticamente.
 
-- **Error de conexión a BD:** Asegúrate de que el puerto 3307 (Docker) o 3306 (Local) no esté ocupado.
-- **PDFs no se generan:** Verifica que las dependencias de Puppeteer estén instaladas correctamente en tu sistema si corres sin Docker.
-- **Limpieza profunda:** `docker compose down -v` eliminará incluso la base de datos para un inicio desde cero.
+> **Regla de oro del Proyecto:** Solo se agregarán funcionalidades que resuelvan un problema real operativo (ahorrar tiempo al cajero) o estratégico (proteger/aumentar el dinero del dueño), nunca por simple novedad tecnológica.
