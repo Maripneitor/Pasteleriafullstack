@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { X, User, Phone, DollarSign, FileText, Clock, Calendar, CheckCircle, Package } from 'lucide-react';
-import { ordersApi } from '../../services/ordersApi';
+import { ordersApi } from '../../api/ordersApi';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 

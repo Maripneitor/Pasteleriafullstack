@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import api from '../../services/api';
+import api from '../../api/axiosClient';
 import { Key, Tag, User as UserIcon, Store as StoreIcon, CheckCircle, Clock, RefreshCw } from 'lucide-react';
 import toast from 'react-hot-toast';
 

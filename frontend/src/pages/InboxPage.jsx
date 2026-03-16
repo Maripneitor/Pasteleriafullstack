@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import PageShell from "../components/ui/PageShell";
 import Card from "../components/ui/Card";
-import client from "../config/axios";
+import client from "../api/axiosClient";
 import { MessageCircle, User, AlertTriangle, CheckCircle, Clock } from "lucide-react";
 import toast from "react-hot-toast";
 

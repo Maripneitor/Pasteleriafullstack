@@ -4,7 +4,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import esLocale from '@fullcalendar/core/locales/es';
-import { ordersApi } from '../services/ordersApi';
+import { ordersApi } from '../api/ordersApi';
 import { handlePdfResponse } from '../utils/pdfHelper';
 import PageShell from '../components/ui/PageShell';
 import Card from '../components/ui/Card';

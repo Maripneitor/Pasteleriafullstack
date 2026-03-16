@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Package, Layers, Droplet, Star, Plus } from 'lucide-react';
-import catalogApi from '../../services/catalogApi';
+import catalogApi from '../../api/catalogApi';
 import toast from 'react-hot-toast';
 
 const TabButton = ({ active, onClick, icon: Icon, label }) => (

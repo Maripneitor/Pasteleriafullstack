@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import api from '../../services/api';
+import api from '../../api/axiosClient';
 import { ArrowLeft, Building, Users, Store as StoreIcon, CheckCircle, Save, Calendar, Activity, X, History, Power, PaintBucket, PowerOff, ShieldAlert, Palette } from 'lucide-react';
 import toast from 'react-hot-toast';
 

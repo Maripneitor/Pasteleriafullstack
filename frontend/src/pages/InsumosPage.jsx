@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import PageShell from "../components/ui/PageShell";
 import Card from "../components/ui/Card";
-import client from "../config/axios";
+import client from "../api/axiosClient";
 import { Plus, Trash2, Edit2, Save, X } from "lucide-react";
 import toast from "react-hot-toast";
 

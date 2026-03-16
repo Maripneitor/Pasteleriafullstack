@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, CheckCircle, Clock, Calendar, FileText, User, Printer, Tag, AlertTriangle, Flame } from 'lucide-react';
-import Card from '../components/common/Card';
-import Button from '../components/common/Button';
-import Badge from '../components/common/Badge';
-import api from '../config/axios';
+import Card from '../components/ui/Card';
+import { Button } from '../components/ui/Button';
+import { Badge } from '../components/ui/Badge';
+import api from '../api/axiosClient';
 import toast from 'react-hot-toast';
 
 const OrderDetailsProduction = () => {

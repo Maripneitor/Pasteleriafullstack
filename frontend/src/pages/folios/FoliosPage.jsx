@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import OrderCard from '../../components/OrderCard';
-import foliosApi from '../../services/folios';
+import foliosApi from '../../api/folios';
 import { Plus, ListFilter, Calendar as CalendarIcon } from 'lucide-react';
 import toast from 'react-hot-toast';
 

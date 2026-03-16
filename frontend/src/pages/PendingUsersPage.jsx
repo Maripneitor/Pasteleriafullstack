@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import axios from '../config/axios';
-import { activationApi } from '../services/activationApi';
+import axios from '../api/axiosClient';
+import { activationApi } from '../api/activationApi';
 import { UserPlus, RefreshCw, Copy, CheckCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 

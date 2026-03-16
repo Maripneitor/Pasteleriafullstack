@@ -101,7 +101,7 @@ services:
       - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
       - PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
       - TZ=America/Mexico_City
-    command: node whatsapp-gateway.js
+    command: node src/whatsapp-gateway.js
     volumes:
       - ./backend:/app
       - /app/node_modules

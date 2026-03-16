@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import client from '../config/axios';
+import client from '../api/axiosClient';
 import EditOrderModal from '../components/orders/EditOrderModal';
 import { Loader2 } from 'lucide-react';
 

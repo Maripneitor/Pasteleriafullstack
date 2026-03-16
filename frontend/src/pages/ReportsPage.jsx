@@ -1,15 +1,15 @@
 
 import React, { useState } from 'react';
-import PageHeader from '../components/common/PageHeader';
-import Card from '../components/common/Card';
-import Button from '../components/common/Button';
+import PageHeader from '../components/layout/PageHeader';
+import Card from '../components/ui/Card';
+import { Button } from '../components/ui/Button';
 import { FileText, Mail, Calendar, Search, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
-import reportsApi from '../services/reportsApi';
-import commissionsApi from '../services/commissionsApi';
-import accountingApi from '../services/accountingApi';
+import reportsApi from '../api/reportsApi';
+import commissionsApi from '../api/commissionsApi';
+import accountingApi from '../api/accountingApi';
 import { handlePdfResponse, generatePdfFromDom, getPdfBlobFromDom } from '../utils/pdfHelper';
-import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '../components/common/Table';
+import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '../components/ui/Table';
 
 const ReportsPage = () => {
     const [activeTab, setActiveTab] = useState('daily'); // 'daily' | 'commissions' | 'balance'

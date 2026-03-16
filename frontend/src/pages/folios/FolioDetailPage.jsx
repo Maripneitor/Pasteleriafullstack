@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import foliosApi, { downloadPdfBlob } from '../../services/folios';
+import foliosApi, { downloadPdfBlob } from '../../api/folios';
 import { ArrowLeft, FileText, Calendar, User, DollarSign, Package, Clock, ShieldCheck, History } from 'lucide-react';
 import toast from 'react-hot-toast';
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import api from '../../services/api';
+import api from '../../api/axiosClient';
 import { Building, Users, AlertCircle, CheckCircle, Save, Settings as SettingsIcon, Store as StoreIcon, DollarSign, Clock, Download, ChevronRight } from 'lucide-react';
 import toast from 'react-hot-toast';
 

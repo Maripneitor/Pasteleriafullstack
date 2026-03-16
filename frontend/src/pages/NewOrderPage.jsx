@@ -1,6 +1,6 @@
 import React from 'react';
 import { OrderProvider, useOrder } from '../context/OrderContext';
-import OrderWizardLayout from '../components/OrderWizardLayout';
+import OrderWizardLayout from '../components/layout/OrderWizardLayout';
 import StepClient from '../components/orders/StepClient';
 import StepProduct from '../components/orders/StepProduct';
 import StepDetails from '../components/orders/StepDetails';

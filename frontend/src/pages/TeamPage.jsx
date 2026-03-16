@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 // eslint-disable-next-line no-unused-vars
 import { motion } from 'framer-motion';
 import { Plus, Trash2, Edit2, Shield, ShieldOff, CheckCircle, XCircle } from 'lucide-react';
-import usersApi from '../services/usersApi';
-import branchesApi from '../services/branchesApi';
+import usersApi from '../api/usersApi';
+import branchesApi from '../api/branchesApi';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 import { formatDistanceToNow } from 'date-fns';

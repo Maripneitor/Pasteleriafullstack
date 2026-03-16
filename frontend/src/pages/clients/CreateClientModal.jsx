@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { X, Save, User } from 'lucide-react';
 import toast from 'react-hot-toast';
-import clientsApi from '../../services/clients';
+import clientsApi from '../../api/clients';
 
 export default function CreateClientModal({ isOpen, onClose, onClientCreated }) {
     const [formData, setFormData] = useState({
