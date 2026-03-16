@@ -1,73 +1,99 @@
-# Pastelería La Fiesta - Análisis y Plan de Producto (SaaS B2B)
+# La Fiesta - Sistema Integral de Pastelería (SaaS Multi-Sucursal)
 
-Este documento es una guía estratégica viva del proyecto. Sirve para evaluar la salud actual de la plataforma, plantear las preguntas correctas para su evolución, y definir las metas técnicas y de negocio a corto y mediano plazo.
+## 1. Descripción/Contexto
 
----
+**¿Qué es?**
+La Fiesta es una plataforma SaaS (Software as a Service) B2B multi-tenant diseñada específicamente para la gestión operativa y estratégica de pastelerías, permitiendo la administración centralizada de múltiples sucursales bajo una misma cuenta de cliente (Tenant).
 
-## 1. El Diagnóstico (¿Qué necesitamos saber del proyecto actual?)
+**¿Por qué existe y qué problema resuelve?**
+Las pastelerías enfrentan un desafío único: manejan pedidos personalizados complejos (textos, decoraciones, alergias), un inventario mixto (stock en vitrina vs. bajo pedido) y flujos de caja dinámicos (anticipos y liquidaciones). Este sistema resuelve la fragmentación de la información (usar Excel, libretas y WhatsApp por separado) unificando la captura de pedidos (asistida por IA), el control estricto de caja, la comunicación con clientes y la visualización de métricas financieras clave en un solo "tablero de mando".
 
-**El propósito principal:**
-La plataforma es un SaaS B2B Multi-Tenant diseñado para la gestión operativa y estratégica de pastelerías ("La Fiesta"). Su valor reside en consolidar la captura de pedidos (manual e IA), control de caja, inventario, reportes financieros y gestión de sucursales en un solo lugar. **El propósito sigue intacto y es más relevante que nunca** ante la necesidad de los dueños de escalar de 1 a 100 sucursales sin perder el control.
+### Estado Actual (Lo que ya tienes)
 
-**Estado de la arquitectura y el código:**
-- **Backend:** Se ha migrado exitosamente hacia una **Clean Architecture** (`/src/controllers`, `/services`, `/models`, etc.). La lógica de negocio pesada (parseo de IA, flujos de pedidos) está en servicios, lo cual hace al backend altamente escalable y mantenible.
-- **Frontend:** Refactorizado hacia un enfoque modular y basado en el ecosistema React (`/components/ui`, `/components/layout`, `/api`, `/hooks`). Existe un **Design System** robusto con soporte nativo para Modo Oscuro, eliminando el código "espagueti" visual.
-- **Seguridad:** Se maneja a través de un RBAC estricto (Roles) y aislamiento Multi-Tenant robusto garantizado por middlewares.
+*   **Funcionalidades existentes:**
+    *   Gestión de Usuarios y Roles estricta (Super Admin, Dueño, Admin, Empleado).
+    *   Arquitectura Multi-Tenant (aislamiento de datos por pastelería).
+    *   Captura de pedidos asistida por Inteligencia Artificial (AI Order Parsing).
+    *   Gestión de Catálogos (Sabores, Productos, Precios de Temporada).
+    *   Integración con WhatsApp para notificaciones automatizadas.
+    *   Generación de reportes PDF y tickets.
+    *   Control básico de Caja y Cortes diarios.
+*   **Tecnologías actuales:**
+    *   **Backend:** Node.js, Express, Sequelize ORM, MySQL (Estructurado bajo Clean Architecture).
+    *   **Frontend:** React (Vite), Tailwind CSS, Design System propio con soporte nativo para Claro/Oscuro.
+    *   **Servicios Externos:** OpenAI API, WhatsApp Web JS.
+*   **Limitaciones conocidas:**
+    *   La sincronización de WhatsApp requiere escaneo de QR manual y puede desconectarse.
+    *   Dependencia de latencia externa para el análisis de texto de la IA.
+    *   Inconsistencias visuales (deuda técnica UI) en algunas vistas heredadas antes de la implementación del Design System estricto.
 
-**Rendimiento y cuellos de botella:**
-- **Dependencias Externas:** El mayor cuello de botella potencial radica en la latencia de las peticiones a la API de OpenAI (parseo de pedidos por voz/texto) y la generación síncrona de PDFs de alta carga gráfica.
-- **Base de Datos:** MySQL gestiona bien la carga actual, pero con el crecimiento de "Modo Chismoso" (Logs de Auditoría en vivo) y múltiples Tenants, las consultas históricas podrían ralentizarse si no se indexan correctamente o se archivan.
+### Objetivos del Nuevo Requerimiento
 
-**Errores actuales (Bugs y Deuda Técnica):**
-- **Estabilidad de WhatsApp:** La sesión de `whatsapp-web.js` puede ser inestable si la conexión del dispositivo principal falla. Requiere monitoreo y auto-reconexión robusta.
-- **Manejo de Errores Frontend:** Algunos endpoints aún podrían no manejar correctamente los "Empty States" en la UI cuando falla la red.
-
----
-
-## 2. Las Preguntas Clave (¿Qué información debemos pedir?)
-
-### 🧑‍💼 Preguntas para los Usuarios (Dueños, Administradores, Cajeros):
-
-1. **Misión Crítica:** *"¿Cuál es la función principal por la que usas esta aplicación?"*
-   - _Propósito:_ Asegurar que la captura de pedidos (Folios) y el Cuadre de Caja jamás se rompan durante actualizaciones.
-2. **Puntos de Fricción (UX):** *"¿Qué te frustra o te confunde al usarla?"*
-   - _Propósito:_ Detectar si la interfaz de captura rápida es demasiado lenta en hora pico, o si los reportes financieros no son claros a simple vista.
-3. **El "Botón Mágico" (Features):** *"Si pudieras agregarle un 'botón mágico' que hiciera algo nuevo, ¿qué haría?"*
-   - _Posibles respuestas esperadas:_ "Sugerir promociones automáticas", "Avisarme en WhatsApp si hay un robo", "Predecir qué pasteles hornear mañana".
-
-### 🛠️ Preguntas para el Equipo de Desarrollo (Revisión Técnica):
-
-1. **Mantenimiento:** *"¿Qué parte del código da más problemas de mantenimiento o es más difícil de leer?"*
-   - _Foco actual:_ Simplificar y refactorizar el `OrderWizardLayout` (el flujo de captura de pedido de 6 pasos) si se vuelve inmanejable.
-2. **Documentación:** *"¿Están bien documentadas las herramientas que usamos?"*
-   - _Foco actual:_ Existe Swagger para la API en `/api/docs` y un `DESIGN_SYSTEM.md` para el UI. Hay que mantenerlos al día al agregar endpoints del Dashboard Global.
-3. **Obsolescencia:** *"¿Qué tecnologías o dependencias están obsoletas y necesitan actualización?"*
-   - _Foco actual:_ Monitorear la compatibilidad de `puppeteer` y `whatsapp-web.js` con las últimas versiones de Node y los cambios en la API de Meta.
+El objetivo de esta fase es **normalizar y estandarizar el Frontend** bajo un Design System inquebrantable, asegurando 100% de consistencia visual (Dark/Light mode) y eliminar cualquier ambigüedad de UX. Además, se busca **potenciar la vista del Dueño** para convertirla en una herramienta puramente estratégica (tableros financieros, insights predictivos de IA, control de riesgos) separándola claramente de las herramientas de configuración global que solo competen al Super Admin.
 
 ---
 
-## 3. El Plan de Acción (Metas Claras y Medibles)
+## 2. Especificación de Requerimientos
 
-Para asegurar que la plataforma aporte valor real y soporte el crecimiento, las metas se dividen en tres pilares:
+### 2.1 Orden de Vistas, Roles y Propósitos
 
-### 🧹 Metas de Refactorización y Calidad
-1. **Consistencia Visual Total (Sprint 1.1):**
-   - _Objetivo:_ Erradicar el 100% de los colores "hardcodeados" (ej. `bg-white`) en los componentes restantes y garantizar que el Dark Mode se vea perfecto en todas las pantallas.
-2. **Cobertura de Pruebas E2E:**
-   - _Objetivo:_ Automatizar las pruebas de los flujos críticos (Login → Crear Pedido → Cerrar Caja) usando Playwright en CI/CD para evitar regresiones.
+El sistema divide su navegación basada estrictamente en el rol del usuario conectado.
 
-### ⚡ Metas de Optimización y Rendimiento
-1. **Procesamiento Asíncrono de Tareas Pesadas:**
-   - _Objetivo:_ Mover la generación de PDFs y el envío masivo de correos/WhatsApp a una cola de trabajos en segundo plano (ej. Redis/BullMQ) para reducir el tiempo de respuesta de la API a menos de 500ms.
-2. **Optimización de Base de Datos para el Dashboard:**
-   - _Objetivo:_ Crear vistas materializadas o tablas de resumen pre-calculadas (CRON jobs nocturnos) para que el "Dashboard Global del Dueño" cargue en menos de 1 segundo incluso con años de historia.
+| Vista / Pantalla | Rol Principal (Visibilidad) | Propósito y Funcionamiento |
+| :--- | :--- | :--- |
+| **Tablero Dueño (Dashboard)** | Dueño, Admin | **Vista Estratégica.** Muestra métricas financieras clave en tiempo real (Ventas vs Ayer, Ticket Promedio), alertas de pérdidas, y comparativas multi-sucursal. *No es para operar, es para decidir.* |
+| **Caja y Cortes** | Empleado, Admin, Dueño | **Control y Seguridad.** Registro de ingresos/egresos, desglose por método de pago. El flujo exige arqueo ciego (capturar físico antes de ver cálculo) y resalta faltantes en rojo. |
+| **Reportes y Estadísticas** | Dueño, Admin | **Análisis de Rendimiento.** Tableros interactivos (no solo PDF) con filtros de fecha. Exportación a Excel y envíos automáticos por WhatsApp del corte diario. |
+| **Comisiones** | Dueño, Admin | **Nómina/Incentivos.** Tabla en vivo de comisiones por empleado/folio. Estados de pago (Pendiente/Pagado) basados en reglas configurables de la sucursal. |
+| **Modo Chismoso (Auditoría)** | Dueño, Super Admin | **Seguridad y Trazabilidad.** Log crítico en tiempo real de anomalías (ej. "Caja abierta fuera de horario", "Pedido eliminado"). Permite cerrar sesiones remotamente (Botón Pánico). |
+| **Equipo de Trabajo** | Dueño, Admin | **Gestión de Personal.** Ver turnos, última conexión. Opciones de "Suspender" (nunca borrar). |
+| **Directorio / Clientes (CRM)** | Dueño, Admin, Empleado | **Retención de Clientes.** Historial de compras, segmentación automática (VIP, Frecuente), alertas de cumpleaños y botón rápido para WhatsApp. |
+| **Catálogo de Sabores/Precios**| Dueño, Admin | **Gestión Comercial.** Control de stock (vitrina), reglas de pedidos (tiempo de entrega), márgenes de ganancia y configuración de temporadas. Buscador interno rápido. |
+| **Configuración WhatsApp** | Dueño (Básico), Super Admin (Técnico) | **Canal de Comunicación.** Dueño configura respuestas, horas y mensajes de bienvenida. Super Admin ve logs técnicos y reconecta la API. |
+| **Gestión de Tenants (Global)**| Super Admin | **Administración SaaS.** Alta de nuevas pastelerías (clientes), facturación del software, métricas de uso global, reseteo de dueños. *Invisible para Dueños.* |
+| **Captura de Pedido (Wizard)** | Empleado, Admin | **Operación Core.** Flujo guiado de 6 pasos para tomar un pedido. Incluye panel de IA para pegar texto largo de WhatsApp y autocompletar el formulario. |
 
-### ✨ Metas de Nuevas Funcionalidades (Features Basadas en Valor)
-1. **Dashboard Estratégico Multi-Sucursal (Visión de Águila):**
-   - _Objetivo:_ Implementar un selector de sucursales en tiempo real y KPIs comparativos (Ventas Sucursal A vs B) exclusivo para el rol `OWNER`.
-2. **Caja Fuerte (Control y Auditoría Estricta):**
-   - _Objetivo:_ Flujo obligatorio de "Apertura y Cierre" ciego, forzando a los cajeros a ingresar el conteo físico antes de revelar el sobrante/faltante calculado por el sistema.
-3. **CRM e Insights de IA:**
-   - _Objetivo:_ Usar OpenAI no solo para capturar texto, sino para predecir demanda estacional y segmentar clientes VIP automáticamente.
+### 2.2 Requerimientos Funcionales (RF)
 
-> **Regla de oro del Proyecto:** Solo se agregarán funcionalidades que resuelvan un problema real operativo (ahorrar tiempo al cajero) o estratégico (proteger/aumentar el dinero del dueño), nunca por simple novedad tecnológica.
+*   **RF01:** El sistema debe permitir al rol Dueño visualizar las métricas financieras (Ventas, Ticket Promedio) consolidadas de todas sus sucursales asignadas en la vista "Tablero Dueño".
+*   **RF02:** El sistema debe requerir que el Cajero (Empleado) introduzca el monto físico contado en caja *antes* de que el sistema revele el sobrante o faltante calculado ("Arqueo Ciego").
+*   **RF03:** El sistema debe ocultar mediante un botón (icono de 👁️) todos los montos sensibles en el Tablero Dueño y Caja.
+*   **RF04:** El sistema no debe permitir la eliminación física de registros de empleados, catálogos o clientes; en su lugar, debe cambiar su estado a "Desactivado/Suspendido".
+*   **RF05:** El sistema debe generar alertas visuales (badges rojos/naranjas) en la tabla de Balance General cuando se detecten flujos de caja negativos o faltantes.
+*   **RF06:** La IA (Insights) debe procesar el historial de ventas y proveer al Dueño al menos una recomendación mensual accionable (ej. "Sugerencia de subida de precio por aumento en costo de insumos").
+
+### 2.3 Requerimientos No Funcionales (RNF)
+
+*   **RNF01 (Consistencia UI):** Todos los componentes visuales (Botones, Tablas, Inputs, Modales) deben ser instanciados desde el Design System central (`/src/components/ui/`) sin permitir estilos "hardcodeados" en línea.
+*   **RNF02 (Accesibilidad):** Toda la interfaz debe cumplir con un ratio de contraste mínimo AA, asegurando textos legibles tanto en Modo Claro como en Modo Oscuro.
+*   **RNF03 (Seguridad):** Las vistas marcadas como exclusivas para "Dueño" o "Super Admin" deben validar el token JWT y los permisos RBAC tanto en el Frontend (protección de rutas) como en el Backend (middlewares `checkRole` y `tenantScope`).
+*   **RNF04 (Rendimiento):** Las consultas de "Reportes y Estadísticas" que abarquen más de 30 días deben resolverse en menos de 2 segundos.
+*   **RNF05 (Theming):** El cambio entre Modo Claro y Oscuro debe aplicarse instantáneamente en toda la aplicación sin requerir recargar la página, utilizando tokens CSS o Tailwind de manera semántica.
+
+---
+
+## 3. Información Técnica Adicional
+
+**Entregables Esperados:**
+1.  **Matriz de Auditoría UX/UI:** Documento detallando problemas visuales y de flujo por cada pantalla listada.
+2.  **Design System Completo:** Archivo `DESIGN_SYSTEM.md` actualizado con reglas de uso de componentes, tokens de color (Light/Dark) y espaciado.
+3.  **Refactorización de Pantallas:** Código actualizado en React (`/src/pages/`) utilizando los componentes normalizados.
+4.  **Implementación de "Business Insights":** Módulo funcional en el Tablero del Dueño consumiendo el endpoint de sugerencias predictivas.
+
+**Restricciones:**
+*   No se debe alterar el esquema base de la base de datos (MySQL) sin una justificación de rendimiento crítica.
+*   La refactorización del frontend debe mantener la compatibilidad con las rutas de la API actual.
+*   Cualquier componente nuevo debe escribirse usando Functional Components y React Hooks (ej. `useState`, `useContext`).
+
+**Historias de Usuario (Ejemplos):**
+*   *Como Dueño de pastelería con 3 sucursales*, necesito ver un resumen comparativo de las ventas de hoy al abrir la aplicación desde mi celular, para saber inmediatamente qué sucursal necesita atención.
+*   *Como Cajera en turno de cierre*, necesito registrar rápidamente los gastos del día (ej. compra de agua) y hacer el corte ciego, para poder entregar la caja cuadrada sin errores de cálculo mental.
+*   *Como Super Administrador*, necesito ver qué dueño se conectó por última vez y si su suscripción está activa, para gestionar la cobranza del software.
+
+---
+
+## 4. Consejos para la Redacción (Buenas Prácticas Aplicadas)
+
+*   **Claridad y Consistencia:** Se han definido claramente los nombres de las vistas y los roles. Se utiliza terminología unificada (ej. "Tenant" para referirse a la cuenta de la pastelería).
+*   **Trazabilidad:** Los RF y RNF están numerados para poder ser referenciados fácilmente en commits (`git commit -m "feat(caja): implementa arqueo ciego ref RF02"`) o tarjetas de Jira/Trello.
+*   **Formato Markdown:** El documento está estructurado con encabezados claros, listas para viñetas, tablas para facilitar la lectura de los roles y jerarquía visual.
